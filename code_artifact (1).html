@@ -1,0 +1,1791 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>椰子的冬日秘密圣诞树</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: 宋体标题 + 手写点缀 + 圆润数字 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Noto+Sans+SC:wght@300;400;500;700&family=Noto+Serif+SC:wght@600;700;900&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-night: #040d14;
+      --gold-foil: #f6d365;
+      --gold-line: rgba(246, 211, 101, 0.34);
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: radial-gradient(circle at 50% 0%, #0d2b38 0%, #061822 48%, #030b11 100%);
+      color: #f8fafc;
+      min-height: 100vh;
+      overflow-x: hidden;
+      margin: 0;
+    }
+
+    .font-serif-sc { font-family: 'Noto Serif SC', serif; }
+    .font-handwriting { font-family: 'Ma Shan Zheng', cursive; }
+    .font-num { font-family: 'Nunito', sans-serif; }
+
+    /* 细腻景深飘雪画布 */
+    #snow-canvas {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    /* 静谧极光微光 */
+    @keyframes auroraBreath {
+      0%, 100% { transform: translateX(-50%) scale(1); opacity: 0.28; }
+      50% { transform: translateX(-48%) scale(1.06); opacity: 0.45; }
+    }
+
+    .aurora-glow {
+      animation: auroraBreath 12s ease-in-out infinite;
+    }
+
+    /* 极简高级丝绒夜蓝/深绿磨砂玻璃卡片 */
+    .velvet-glass {
+      background: linear-gradient(165deg, rgba(11, 33, 44, 0.76) 0%, rgba(6, 19, 27, 0.88) 100%);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      border: 1px solid var(--gold-line);
+      box-shadow:
+        0 28px 64px rgba(0, 0, 0, 0.68),
+        inset 0 1px 0 rgba(255, 250, 235, 0.14);
+    }
+
+    /* 细金线内框装饰 */
+    .gold-inner-frame {
+      position: relative;
+    }
+    .gold-inner-frame::after {
+      content: '';
+      position: absolute;
+      inset: 10px;
+      border: 1px solid rgba(246, 211, 101, 0.16);
+      border-radius: 18px;
+      pointer-events: none;
+    }
+
+    /* 迷你牛皮纸吊牌 */
+    .kraft-tag {
+      background: linear-gradient(135deg, #f7ead0 0%, #e6cfa5 100%);
+      color: #422006;
+      border: 1px solid rgba(180, 83, 9, 0.75);
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.55);
+    }
+
+    /* 树顶八芒星呼吸光效 */
+    @keyframes starRadiate {
+      0%, 100% {
+        filter: drop-shadow(0 0 12px rgba(254, 240, 138, 0.9)) drop-shadow(0 0 26px rgba(245, 158, 11, 0.65));
+        transform: scale(1);
+      }
+      50% {
+        filter: drop-shadow(0 0 20px rgba(255, 255, 255, 1)) drop-shadow(0 0 40px rgba(251, 191, 36, 0.9));
+        transform: scale(1.07);
+      }
+    }
+
+    .tree-top-star {
+      transform-origin: 210px 44px;
+      animation: starRadiate 3.4s ease-in-out infinite;
+    }
+
+    @keyframes fairyTwinkle {
+      0%, 100% { opacity: 0.35; transform: scale(0.88); }
+      50% { opacity: 1; transform: scale(1.2); }
+    }
+
+    .fairy-bulb {
+      animation: fairyTwinkle 2.8s ease-in-out infinite;
+    }
+
+    /* 圣诞球物理微晃动画 */
+    @keyframes pendulumSway {
+      0%, 100% { transform: rotate(-4deg); }
+      50% { transform: rotate(4deg); }
+    }
+
+    .bauble-sway {
+      transform-origin: 50% 0%;
+      animation: pendulumSway 4s ease-in-out infinite;
+    }
+
+    .tree-bauble-btn {
+      position: absolute;
+      transform: translate(-50%, -22%);
+      cursor: pointer;
+      z-index: 20;
+      transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .tree-bauble-btn:hover, .tree-bauble-btn:active {
+      transform: translate(-50%, -22%) scale(1.22);
+      z-index: 35;
+    }
+
+    @keyframes pageReveal {
+      from { opacity: 0; transform: translateY(14px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .animate-reveal {
+      animation: pageReveal 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    /* 统一选项卡片交互（无任何答案剧透） */
+    .quiz-option-card {
+      transition: all 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .quiz-option-card:hover:not(:disabled) {
+      transform: translateY(-2px);
+      background: rgba(246, 211, 101, 0.12);
+      border-color: rgba(246, 211, 101, 0.55);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.32);
+    }
+    .quiz-option-card:active:not(:disabled) {
+      transform: scale(0.985);
+    }
+
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: rgba(4, 13, 20, 0.4); }
+    ::-webkit-scrollbar-thumb { background: rgba(246, 211, 101, 0.3); border-radius: 9999px; }
+  </style>
+</head>
+<body class="relative antialiased selection:bg-amber-300/30 selection:text-amber-100">
+  <!-- 细腻景深飘雪画布 -->
+  <canvas id="snow-canvas"></canvas>
+
+  <!-- 静谧冬夜极光微光层 -->
+  <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+    <div class="aurora-glow absolute -top-28 left-1/2 w-[120vw] h-[320px] bg-gradient-to-r from-emerald-500/15 via-teal-400/20 to-amber-300/10 blur-[100px] rounded-full"></div>
+    <div class="absolute bottom-0 inset-x-0 h-48 bg-gradient-to-t from-[#02070b] to-transparent"></div>
+  </div>
+
+  <!-- 极简顶部导航栏 -->
+  <header class="relative z-30 max-w-2xl mx-auto px-4 pt-5 pb-2 flex items-center justify-between gap-2">
+    <div class="flex items-center gap-2.5">
+      <!-- 线稿风烫金圣诞树微章 -->
+      <div class="w-9 h-9 rounded-full bg-amber-300/10 border border-amber-300/35 flex items-center justify-center text-amber-200 shadow-inner">
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2L13.1 4.5L15.8 4.8L13.7 6.6L14.3 9.2L12 7.8L9.7 9.2L10.3 6.6L8.2 4.8L10.9 4.5L12 2Z" />
+          <path d="M12 8L6 15H10L5 20H19L14 15H18L12 8Z" />
+          <path d="M12 20V22" />
+        </svg>
+      </div>
+      <span class="font-serif-sc text-sm sm:text-base font-bold text-amber-100/95 tracking-wider">
+        椰子的冬日秘密圣诞树
+      </span>
+    </div>
+
+    <div class="flex items-center gap-2">
+      <!-- 分享按钮 -->
+      <button id="btn-share" class="px-3 py-1.5 rounded-full bg-white/5 hover:bg-amber-300/15 border border-amber-200/20 text-amber-100/90 text-xs font-medium flex items-center gap-1.5 transition active:scale-95">
+        <svg class="w-3.5 h-3.5 text-amber-300" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/>
+        </svg>
+        <span>分享</span>
+      </button>
+
+      <!-- 低调的椰子主人入口微章 -->
+      <button id="btn-host-toggle" class="px-3 py-1.5 rounded-full bg-white/5 hover:bg-amber-300/15 border border-amber-200/25 text-amber-200/90 text-xs font-medium flex items-center gap-1.5 transition active:scale-95">
+        <span id="host-badge-dot" class="w-1.5 h-1.5 rounded-full bg-amber-300/50"></span>
+        <span id="host-btn-text">椰子入口</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- 主内容容器 -->
+  <main class="relative z-20 max-w-2xl mx-auto px-4 pb-20 pt-3">
+
+    <!-- ==================== 视图一：极简高级烫金邀请函开场 & 11道默契测试 ==================== -->
+    <section id="view-quiz" class="hidden animate-reveal">
+      <!-- 极简唯美、高级克制的居中邀请函卡片 -->
+      <div id="quiz-intro-card" class="velvet-glass gold-inner-frame rounded-3xl px-6 py-10 sm:px-12 sm:py-14 text-center my-4 sm:my-8">
+        <!-- 顶部精致简约的线稿风烫金圣诞树徽标 -->
+        <div class="w-16 h-16 mx-auto mb-6 rounded-2xl bg-gradient-to-b from-amber-300/15 to-emerald-500/10 border border-amber-300/35 flex items-center justify-center shadow-[0_0_30px_rgba(246,211,101,0.18)]">
+          <svg class="w-9 h-9 text-amber-200" viewBox="0 0 36 36" fill="none" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round">
+            <!-- 树顶星芒 -->
+            <path d="M18 3L19.4 6.2L22.8 6.6L20.2 8.9L21 12.2L18 10.4L15 12.2L15.8 8.9L13.2 6.6L16.6 6.2L18 3Z" fill="rgba(246,211,101,0.22)" />
+            <!-- 三层极简松枝线稿 -->
+            <path d="M18 11.5L11.5 18.5H15.2L9.5 24.5H14L8 30H28L22 24.5H26.5L20.8 18.5H24.5L18 11.5Z" />
+            <!-- 树干与底座 -->
+            <path d="M18 30V33.5M14.5 33.5H21.5" />
+            <!-- 细微星尘点缀 -->
+            <circle cx="15" cy="21.5" r="0.8" fill="currentColor" />
+            <circle cx="20.5" cy="26.5" r="0.8" fill="currentColor" />
+            <circle cx="13.5" cy="27.5" r="0.8" fill="currentColor" />
+          </svg>
+        </div>
+
+        <p class="text-[11px] tracking-[0.28em] text-amber-300/75 uppercase mb-3">
+          WINTER SECRET · INVITATION
+        </p>
+
+        <!-- 克制高级的主标题 -->
+        <h1 class="font-serif-sc text-2xl sm:text-4xl font-bold text-amber-50 tracking-wide mb-4">
+          椰子的冬日秘密圣诞树
+        </h1>
+
+        <!-- 纤细金线分割 -->
+        <div class="w-16 h-[1px] bg-gradient-to-r from-transparent via-amber-300/60 to-transparent mx-auto mb-5"></div>
+
+        <!-- 诗意副标题 -->
+        <p class="text-sm sm:text-base text-slate-300/90 max-w-md mx-auto leading-relaxed font-light mb-9">
+          答对 11 道关于椰子的小问题，点亮专属颜色的水晶球，把悄悄话挂上树梢
+        </p>
+
+        <!-- 核心主按钮 -->
+        <div class="flex flex-col items-center gap-3.5">
+          <button id="btn-start-quiz" class="w-full sm:w-64 py-3.5 px-8 rounded-full bg-gradient-to-r from-amber-200 via-amber-300 to-amber-400 text-slate-950 font-bold text-sm sm:text-base tracking-wide shadow-[0_10px_28px_rgba(246,211,101,0.3)] hover:brightness-105 transition active:scale-95">
+            开启默契测试
+          </button>
+
+          <button id="btn-skip-to-tree" class="text-xs text-slate-400 hover:text-amber-200/90 transition py-1">
+            先去看看圣诞树 →
+          </button>
+        </div>
+      </div>
+
+      <!-- 答题信笺卡片（全程悬念，点击即记录并平滑跳转下一题） -->
+      <div id="quiz-question-card" class="hidden velvet-glass rounded-3xl p-6 sm:p-9 my-3">
+        <!-- 顶部极简进度指示 -->
+        <div class="flex items-center justify-between text-xs text-amber-200/80 mb-3">
+          <span class="tracking-wider">第 <strong id="q-current-num" class="font-num text-amber-200 text-base">1</strong> / 11 题</span>
+          <span id="q-tag" class="px-2.5 py-0.5 rounded-full bg-amber-300/10 border border-amber-300/20 text-amber-200/90">
+            季节偏好
+          </span>
+        </div>
+
+        <!-- 细金线动态进度条 -->
+        <div class="w-full h-1.5 bg-slate-900/90 rounded-full overflow-hidden mb-8">
+          <div id="q-progress-bar" class="h-full bg-gradient-to-r from-emerald-400 to-amber-300 rounded-full transition-all duration-300" style="width: 9%;"></div>
+        </div>
+
+        <!-- 题干 -->
+        <div class="mb-7">
+          <h2 id="q-title" class="font-serif-sc text-xl sm:text-2xl font-bold text-white leading-snug">
+            加载中...
+          </h2>
+        </div>
+
+        <!-- 格式完全统一的 A/B/C/D 选项列表 -->
+        <div id="q-options-container" class="space-y-3"></div>
+
+        <p class="text-center text-[11px] text-slate-400/80 mt-6">
+          点击选项后自动进入下一题 · 最终揭晓专属水晶球颜色
+        </p>
+      </div>
+    </section>
+
+    <!-- ==================== 视图二：烫金默契鉴定卡片 & 私密悄悄话挂球 ==================== -->
+    <section id="view-result" class="hidden animate-reveal space-y-5">
+      <!-- 定制烫金鉴定卡片 -->
+      <div class="velvet-glass gold-inner-frame rounded-3xl p-6 sm:p-8 text-center relative overflow-hidden">
+        <div class="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-amber-300/10 border border-amber-300/30 text-amber-200 text-xs mb-3">
+          <span>椰子冬日默契鉴定书</span>
+        </div>
+
+        <!-- 专属水晶球预览 -->
+        <div class="my-2 flex flex-col items-center justify-center">
+          <div id="result-ornament-preview" class="w-24 h-28 flex items-center justify-center"></div>
+          <div class="mt-1 inline-flex items-center gap-2 px-4 py-1 rounded-full bg-slate-950/70 border border-amber-300/30">
+            <span class="text-xs text-slate-400">专属水晶球：</span>
+            <span id="result-ball-name" class="text-xs sm:text-sm font-bold text-amber-200">至尊星耀流金</span>
+          </div>
+        </div>
+
+        <!-- 得分展示 -->
+        <div class="my-3">
+          <div class="font-num text-4xl sm:text-5xl font-extrabold text-white tracking-tight">
+            <span id="result-score-num" class="text-transparent bg-clip-text bg-gradient-to-b from-amber-100 to-amber-400">11</span>
+            <span class="text-lg sm:text-xl text-slate-400 font-normal"> / 11 题</span>
+          </div>
+        </div>
+
+        <!-- 关系评价与未来行动建议 -->
+        <div class="mt-5 p-5 rounded-2xl bg-black/25 border border-amber-200/15 text-left space-y-4">
+          <div>
+            <h3 id="result-rel-title" class="font-serif-sc text-lg sm:text-xl font-bold text-amber-200 mb-1.5">
+              椰子唯一认证本命
+            </h3>
+            <p id="result-rel-desc" class="text-slate-200/95 text-xs sm:text-sm leading-relaxed"></p>
+          </div>
+
+          <div class="p-3.5 rounded-xl bg-emerald-950/40 border border-emerald-400/20">
+            <div class="text-xs font-bold text-emerald-300 mb-1">
+              未来可以继续干啥：
+            </div>
+            <p id="result-future-plan" class="text-xs sm:text-sm text-emerald-100/90 leading-relaxed"></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 私密写信挂球表单 -->
+      <div id="hang-form-card" class="velvet-glass rounded-3xl p-6 sm:p-7">
+        <h3 class="font-serif-sc text-lg font-bold text-amber-100">
+          把水晶球和悄悄话挂上树梢
+        </h3>
+        <p class="text-xs text-slate-300/85 mt-1 mb-4">
+          🔒 悄悄话已加密封存，只有椰子本人输入暗号解锁后才能拆阅，其他访客无法偷看。
+        </p>
+
+        <form id="hang-ornament-form" class="space-y-4">
+          <div>
+            <label class="block text-xs font-medium text-amber-100/85 mb-1.5">你的署名（显示在树上小吊牌） *</label>
+            <input type="text" id="input-nickname" required maxlength="14" placeholder="输入你的昵称或专属外号..."
+              class="w-full px-4 py-3 rounded-2xl bg-slate-950/75 border border-amber-200/20 text-white placeholder-slate-500 text-sm focus:outline-none focus:border-amber-300 transition" />
+          </div>
+
+          <div>
+            <label class="block text-xs font-medium text-amber-100/85 mb-1.5">写给椰子的悄悄话（仅椰子可见） *</label>
+            <textarea id="input-message" required rows="3" maxlength="240" placeholder="写下想对椰子说的心里话、祝福或约饭暗号..."
+              class="w-full px-4 py-3 rounded-2xl bg-slate-950/75 border border-amber-200/20 text-white placeholder-slate-500 text-sm focus:outline-none focus:border-amber-300 transition resize-none"></textarea>
+          </div>
+
+          <button type="submit" id="btn-submit-ornament" class="w-full py-3.5 rounded-full bg-gradient-to-r from-amber-200 via-amber-300 to-amber-400 text-slate-950 font-bold text-sm sm:text-base shadow-[0_10px_28px_rgba(246,211,101,0.28)] hover:brightness-105 transition active:scale-95">
+            封存悄悄话并挂上圣诞树
+          </button>
+        </form>
+      </div>
+
+      <!-- 1~11 题答题对错清单（仅显示对错状态，绝不直接泄露正确答案） -->
+      <div class="velvet-glass rounded-3xl p-5 sm:p-7">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="font-serif-sc text-base font-bold text-amber-100">
+            11 题默契答题清单
+          </h3>
+          <span id="review-badge" class="text-xs px-3 py-1 rounded-full bg-amber-300/15 text-amber-200 font-medium">
+            对 11 · 错 0
+          </span>
+        </div>
+
+        <div id="answers-review-list" class="space-y-2.5"></div>
+      </div>
+    </section>
+
+    <!-- ==================== 视图三：椰子的圣诞树主舞台 ==================== -->
+    <section id="view-tree" class="hidden animate-reveal">
+      <!-- 顶部简洁状态栏 -->
+      <div class="velvet-glass rounded-2xl p-3.5 sm:p-4 mb-3 flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <p class="text-xs sm:text-sm font-bold text-amber-100">
+            树梢已点亮 <span id="tree-total-count" class="font-num text-amber-300 text-base">0</span> 颗好友水晶球
+          </p>
+          <p class="text-[11px] text-slate-400 mt-0.5">点击彩球查看战绩 · 悄悄话仅椰子解锁后可拆阅</p>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <button id="btn-view-my-report" class="hidden px-3 py-1.5 rounded-full bg-amber-300/15 border border-amber-300/35 text-amber-200 text-xs font-medium hover:bg-amber-300/25 transition">
+            我的鉴定书
+          </button>
+          <button id="btn-retake-quiz" class="px-3.5 py-1.5 rounded-full bg-white/10 hover:bg-white/15 border border-white/15 text-slate-100 text-xs font-medium transition">
+            重新测试挂球
+          </button>
+        </div>
+      </div>
+
+      <!-- 椰子主人专属已解锁控制条 -->
+      <div id="host-mode-banner" class="hidden mb-3 p-3.5 rounded-2xl bg-gradient-to-r from-amber-950/85 via-emerald-950/80 to-slate-950/85 border border-amber-300/45 shadow-lg flex items-center justify-between gap-3">
+        <div>
+          <p class="text-xs sm:text-sm font-bold text-amber-200">👑 椰子主人视角已解锁</p>
+          <p class="text-[11px] text-slate-300 mt-0.5">所有水晶球里的悄悄话已对你开放，可随时阅读并回复</p>
+        </div>
+        <button id="btn-exit-host" class="px-3 py-1.5 rounded-full bg-black/45 hover:bg-black/65 border border-amber-200/25 text-amber-100 text-xs transition shrink-0">
+          锁定退出
+        </button>
+      </div>
+
+      <!-- 立体珠宝圣诞树主视觉 -->
+      <div class="relative w-full max-w-[460px] mx-auto my-1 select-none">
+        <div class="absolute inset-x-6 top-10 bottom-10 bg-gradient-to-b from-amber-300/15 via-emerald-400/15 to-teal-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+        <div id="tree-stage" class="relative w-full aspect-[4/5.3]">
+          <svg viewBox="0 0 420 555" class="w-full h-full overflow-visible drop-shadow-[0_26px_40px_rgba(0,0,0,0.75)]">
+            <defs>
+              <linearGradient id="foliageShadow" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#064e3b" />
+                <stop offset="60%" stop-color="#022c22" />
+                <stop offset="100%" stop-color="#011914" />
+              </linearGradient>
+              <linearGradient id="foliageRich" x1="15%" y1="0%" x2="85%" y2="100%">
+                <stop offset="0%" stop-color="#16a34a" />
+                <stop offset="45%" stop-color="#065f46" />
+                <stop offset="100%" stop-color="#022c22" />
+              </linearGradient>
+              <linearGradient id="foliageHighlight" x1="50%" y1="0%" x2="50%" y2="100%">
+                <stop offset="0%" stop-color="#4ade80" />
+                <stop offset="35%" stop-color="#15803d" />
+                <stop offset="100%" stop-color="#064e3b" />
+              </linearGradient>
+              <linearGradient id="frostSnow" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stop-color="#ffffff" stop-opacity="0.92" />
+                <stop offset="100%" stop-color="#bae6fd" stop-opacity="0.22" />
+              </linearGradient>
+              <linearGradient id="woodTrunk" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="#3b1506" />
+                <stop offset="45%" stop-color="#78350f" />
+                <stop offset="100%" stop-color="#290e03" />
+              </linearGradient>
+              <linearGradient id="royalGold" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#fef9c3" />
+                <stop offset="45%" stop-color="#facc15" />
+                <stop offset="80%" stop-color="#d97706" />
+                <stop offset="100%" stop-color="#fef08a" />
+              </linearGradient>
+              <filter id="bulbHalo" x="-60%" y="-60%" width="220%" height="220%">
+                <feGaussianBlur stdDeviation="4" result="blur" />
+                <feMerge>
+                  <feMergeNode in="blur" />
+                  <feMergeNode in="SourceGraphic" />
+                </feMerge>
+              </filter>
+            </defs>
+
+            <!-- 底部雪地光影 -->
+            <ellipse cx="210" cy="518" rx="180" ry="24" fill="url(#frostSnow)" opacity="0.28" />
+            <ellipse cx="210" cy="521" rx="135" ry="15" fill="#e0f2fe" opacity="0.24" />
+
+            <!-- 树干 -->
+            <path d="M188 450 L232 450 L240 516 Q210 524 180 516 Z" fill="url(#woodTrunk)" />
+            <path d="M202 452 L205 516" stroke="#270d02" stroke-width="2" opacity="0.5" />
+            <path d="M219 452 L216 516" stroke="#92400e" stroke-width="1.5" opacity="0.4" />
+
+            <!-- 树下简约礼盒点缀 -->
+            <g transform="translate(94, 470)">
+              <rect x="0" y="10" width="48" height="38" rx="5" fill="#9f1239" />
+              <rect x="-3" y="5" width="54" height="8" rx="3" fill="#e11d48" />
+              <rect x="20" y="5" width="8" height="43" fill="url(#royalGold)" />
+              <path d="M24 5 C14 -5, 6 5, 24 5 C42 5, 34 -5, 24 5" stroke="#fef08a" stroke-width="2.5" fill="none" />
+            </g>
+            <g transform="translate(274, 474)">
+              <rect x="0" y="8" width="46" height="34" rx="5" fill="#065f46" />
+              <rect x="-3" y="3" width="52" height="8" rx="3" fill="#10b981" />
+              <rect x="19" y="3" width="8" height="39" fill="#fde68a" />
+              <path d="M23 3 C14 -5, 7 3, 23 3 C39 3, 32 -5, 23 3" stroke="#fef9c3" stroke-width="2.4" fill="none" />
+            </g>
+
+            <!-- 第五层松枝 -->
+            <path d="M210 308 C148 364, 82 408, 36 442 C58 454, 82 444, 102 456 C125 466, 150 454, 174 463 C198 470, 222 470, 246 463 C270 454, 295 466, 318 456 C338 444, 362 454, 384 442 C338 408, 272 364, 210 308 Z" fill="url(#foliageShadow)" />
+            <path d="M210 314 C154 364, 94 404, 52 434 C78 444, 104 434, 130 445 C156 454, 182 445, 210 452 C238 445, 264 454, 290 445 C316 434, 342 444, 368 434 C326 404, 266 364, 210 314 Z" fill="url(#foliageRich)" />
+            <path d="M52 434 Q72 441 92 435 Q112 443 132 438" stroke="url(#frostSnow)" stroke-width="3.5" stroke-linecap="round" fill="none" />
+            <path d="M288 438 Q308 443 328 435 Q348 441 368 434" stroke="url(#frostSnow)" stroke-width="3.5" stroke-linecap="round" fill="none" />
+
+            <!-- 第四层松枝 -->
+            <path d="M210 240 C158 290, 104 334, 62 366 C84 378, 106 368, 128 380 C154 388, 182 378, 210 385 C238 378, 266 388, 292 380 C314 368, 336 378, 358 366 C316 334, 262 290, 210 240 Z" fill="url(#foliageShadow)" />
+            <path d="M210 245 C164 290, 114 330, 78 358 C102 368, 128 358, 154 368 C182 375, 238 375, 266 368 C292 358, 318 368, 342 358 C306 330, 256 290, 210 245 Z" fill="url(#foliageRich)" />
+            <path d="M78 358 Q98 365 118 359" stroke="url(#frostSnow)" stroke-width="3" stroke-linecap="round" fill="none" />
+            <path d="M302 359 Q322 365 342 358" stroke="url(#frostSnow)" stroke-width="3" stroke-linecap="round" fill="none" />
+
+            <!-- 第三层松枝 -->
+            <path d="M210 176 C166 220, 120 260, 86 288 C106 299, 128 290, 148 300 C178 308, 242 308, 272 300 C292 290, 314 299, 334 288 C300 260, 254 220, 210 176 Z" fill="url(#foliageShadow)" />
+            <path d="M210 180 C170 220, 130 256, 100 282 C124 291, 148 282, 174 290 C198 296, 222 296, 246 290 C272 282, 296 291, 320 282 C290 256, 250 220, 210 180 Z" fill="url(#foliageHighlight)" />
+            <path d="M100 282 Q120 288 138 283" stroke="url(#frostSnow)" stroke-width="2.8" stroke-linecap="round" fill="none" />
+            <path d="M282 283 Q300 288 320 282" stroke="url(#frostSnow)" stroke-width="2.8" stroke-linecap="round" fill="none" />
+
+            <!-- 第二层松枝 -->
+            <path d="M210 116 C174 154, 138 188, 112 214 C132 224, 152 216, 172 224 C196 231, 224 231, 248 224 C268 216, 288 224, 308 214 C282 188, 246 154, 210 116 Z" fill="url(#foliageShadow)" />
+            <path d="M210 120 C178 154, 146 186, 124 208 C146 216, 168 209, 190 215 C202 218, 218 218, 230 215 C252 209, 274 216, 296 208 C274 186, 242 154, 210 120 Z" fill="url(#foliageHighlight)" />
+
+            <!-- 第一层树冠 -->
+            <path d="M210 66 C186 94, 162 120, 142 142 C162 151, 186 145, 210 151 C234 145, 258 151, 278 142 C258 120, 234 94, 210 66 Z" fill="url(#foliageHighlight)" />
+            <path d="M148 139 Q170 146 190 141" stroke="url(#frostSnow)" stroke-width="2.4" stroke-linecap="round" fill="none" />
+            <path d="M230 141 Q250 146 272 139" stroke="url(#frostSnow)" stroke-width="2.4" stroke-linecap="round" fill="none" />
+
+            <!-- 鎏金丝带缠绕 -->
+            <path d="M158 134 Q212 162 264 136" stroke="url(#royalGold)" stroke-width="3" fill="none" opacity="0.85" />
+            <path d="M126 202 Q210 242 296 200" stroke="url(#royalGold)" stroke-width="3.4" fill="none" opacity="0.85" />
+            <path d="M100 278 Q210 326 320 276" stroke="url(#royalGold)" stroke-width="3.8" fill="none" opacity="0.85" />
+            <path d="M78 354 Q210 408 342 352" stroke="url(#royalGold)" stroke-width="4" fill="none" opacity="0.85" />
+            <path d="M54 430 Q210 486 366 428" stroke="url(#royalGold)" stroke-width="4.2" fill="none" opacity="0.82" />
+
+            <!-- 暖光微闪灯串 -->
+            <g filter="url(#bulbHalo)">
+              <circle cx="184" cy="122" r="3.2" fill="#fef08a" class="fairy-bulb" style="animation-delay: 0.1s" />
+              <circle cx="234" cy="128" r="3.2" fill="#fda4af" class="fairy-bulb" style="animation-delay: 0.7s" />
+              <circle cx="156" cy="188" r="3.6" fill="#fde047" class="fairy-bulb" style="animation-delay: 0.3s" />
+              <circle cx="212" cy="198" r="3.6" fill="#7dd3fc" class="fairy-bulb" style="animation-delay: 1.1s" />
+              <circle cx="266" cy="190" r="3.6" fill="#fef08a" class="fairy-bulb" style="animation-delay: 0.5s" />
+              <circle cx="128" cy="262" r="4" fill="#fda4af" class="fairy-bulb" style="animation-delay: 0.9s" />
+              <circle cx="190" cy="275" r="4" fill="#fef08a" class="fairy-bulb" style="animation-delay: 0.2s" />
+              <circle cx="248" cy="270" r="4" fill="#fde047" class="fairy-bulb" style="animation-delay: 1.4s" />
+              <circle cx="296" cy="260" r="4" fill="#6ee7b7" class="fairy-bulb" style="animation-delay: 0.6s" />
+              <circle cx="104" cy="340" r="4.3" fill="#fef08a" class="fairy-bulb" style="animation-delay: 0.4s" />
+              <circle cx="172" cy="354" r="4.3" fill="#fda4af" class="fairy-bulb" style="animation-delay: 1.2s" />
+              <circle cx="238" cy="352" r="4.3" fill="#fef08a" class="fairy-bulb" style="animation-delay: 0.8s" />
+              <circle cx="310" cy="338" r="4.3" fill="#fde047" class="fairy-bulb" style="animation-delay: 1.5s" />
+              <circle cx="82" cy="416" r="4.5" fill="#7dd3fc" class="fairy-bulb" style="animation-delay: 0.3s" />
+              <circle cx="154" cy="432" r="4.5" fill="#fef08a" class="fairy-bulb" style="animation-delay: 1.0s" />
+              <circle cx="222" cy="434" r="4.5" fill="#fda4af" class="fairy-bulb" style="animation-delay: 0.5s" />
+              <circle cx="290" cy="428" r="4.5" fill="#fde047" class="fairy-bulb" style="animation-delay: 1.3s" />
+              <circle cx="344" cy="414" r="4.5" fill="#fef08a" class="fairy-bulb" style="animation-delay: 0.7s" />
+            </g>
+
+            <!-- 树顶八芒金星 -->
+            <g class="tree-top-star">
+              <polygon points="210,8 216,32 240,38 216,44 210,68 204,44 180,38 204,32" fill="#fef08a" opacity="0.6" />
+              <polygon points="210,14 219,34 241,36 224,50 229,71 210,59 191,71 196,50 179,36 201,34"
+                fill="url(#royalGold)" stroke="#ffffff" stroke-width="1.5" stroke-linejoin="round" />
+              <circle cx="210" cy="44" r="5" fill="#ffffff" opacity="0.9" />
+            </g>
+          </svg>
+
+          <!-- 树上立体水晶球挂载层 -->
+          <div id="ornaments-layer" class="absolute inset-0"></div>
+        </div>
+      </div>
+
+      <!-- 0~11 分水晶球颜色图鉴 -->
+      <div class="velvet-glass rounded-2xl p-4 mt-3">
+        <div class="flex items-center justify-between mb-2.5">
+          <h4 class="text-xs font-bold text-amber-200 tracking-wide">
+            0~11 分专属水晶球色系图鉴
+          </h4>
+          <span class="text-[11px] text-slate-400">分数对应不同星尘色彩</span>
+        </div>
+        <div id="legend-grid" class="grid grid-cols-3 sm:grid-cols-4 gap-2 text-[11px]"></div>
+      </div>
+
+      <!-- ==================== 底部严格权限隔离区 ==================== -->
+      <!-- 1. 普通访客视角：仅显示私密信箱提示 + 访客本机自己挂的那一颗球 -->
+      <div id="visitor-privacy-panel" class="velvet-glass rounded-3xl p-5 sm:p-6 mt-5">
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="font-serif-sc text-base font-bold text-amber-100">
+            🔒 树下的秘密信箱
+          </h3>
+          <span class="text-[11px] px-2.5 py-0.5 rounded-full bg-amber-300/10 border border-amber-300/25 text-amber-200">
+            仅椰子本人可拆阅
+          </span>
+        </div>
+
+        <p class="text-xs sm:text-sm text-slate-300/90 leading-relaxed">
+          树梢上目前已挂有 <strong id="privacy-total-count" class="text-amber-300 font-num">0</strong> 颗水晶球。所有悄悄话均已加密封存，仅 <strong class="text-amber-200">椰子本人</strong> 输入专属暗号后才能阅读与回复。
+        </p>
+
+        <!-- 如果当前浏览器访客自己挂过球，仅展示 Ta 自己的这一条及椰子的回复 -->
+        <div id="my-own-ornament-box" class="hidden mt-4 pt-4 border-t border-white/10">
+          <p class="text-xs font-bold text-amber-200 mb-2.5">
+            ✨ 我挂在树上的水晶球（仅自己可见）
+          </p>
+          <div id="my-own-ornament-card"></div>
+        </div>
+      </div>
+
+      <!-- 2. 椰子主人私密信箱（仅输入暗号 coco-leying-susan-jiang 解锁后可见） -->
+      <div id="host-secret-mailbox" class="hidden velvet-glass rounded-3xl p-5 sm:p-6 mt-5 border-amber-300/45">
+        <div class="flex items-center justify-between mb-4">
+          <div>
+            <h3 class="font-serif-sc text-lg font-bold text-amber-200">
+              👑 椰子的私密信箱
+            </h3>
+            <p class="text-xs text-slate-300 mt-0.5">点击任意卡片即可阅读完整悄悄话并写下回复</p>
+          </div>
+          <span id="feed-count-badge" class="text-xs px-3 py-1 rounded-full bg-amber-300/20 text-amber-200 font-bold">
+            共 0 封
+          </span>
+        </div>
+
+        <div id="messages-feed-list" class="space-y-3"></div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ==================== 弹窗 1：彩球详情与严格权限弹窗 ==================== -->
+  <div id="modal-ornament" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+    <div class="velvet-glass gold-inner-frame w-full max-w-md rounded-3xl p-6 relative animate-reveal">
+      <button id="btn-close-ornament-modal" class="absolute top-4 right-4 z-10 w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-slate-300 hover:text-white transition">
+        ✕
+      </button>
+
+      <!-- 彩球与挂球人公开档案 -->
+      <div class="flex items-center gap-3.5 mb-4">
+        <div id="modal-ornament-svg" class="w-16 h-20 shrink-0 flex items-center justify-center"></div>
+        <div>
+          <div class="flex items-center gap-2 flex-wrap">
+            <h3 id="modal-sender-name" class="font-serif-sc text-lg font-bold text-white">好友昵称</h3>
+            <span id="modal-score-badge" class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-300/15 text-amber-200 border border-amber-300/30">
+              答对 11/11 题
+            </span>
+          </div>
+          <p id="modal-rel-title" class="text-xs text-emerald-300 font-medium mt-1">至尊星耀流金</p>
+          <p id="modal-timestamp" class="text-[11px] text-slate-400 mt-0.5">刚刚</p>
+        </div>
+      </div>
+
+      <!-- 场景 A：权限允许查看（椰子主人已解锁 OR 访客本机自己挂的那颗球） -->
+      <div id="modal-unlocked-content" class="hidden">
+        <div class="p-4 rounded-2xl bg-slate-950/75 border border-amber-200/20 mb-4">
+          <p class="text-[11px] text-amber-200/80 mb-1.5 flex items-center justify-between">
+            <span>💌 给椰子的悄悄话：</span>
+            <span id="modal-privacy-tag" class="text-[10px] px-2 py-0.5 rounded bg-amber-300/15 text-amber-200">私密信笺</span>
+          </p>
+          <p id="modal-message-text" class="text-sm sm:text-base text-slate-100 leading-relaxed whitespace-pre-wrap break-words"></p>
+        </div>
+
+        <!-- 椰子的回复展示 -->
+        <div id="modal-reply-display" class="hidden p-4 rounded-2xl bg-emerald-950/55 border border-emerald-400/30 mb-4">
+          <div class="text-xs font-bold text-emerald-300 mb-1">
+            🥥 椰子的回复：
+          </div>
+          <p id="modal-reply-text" class="text-sm text-amber-50 leading-relaxed whitespace-pre-wrap break-words"></p>
+        </div>
+
+        <!-- 仅椰子主人模式才显示回复输入框 -->
+        <div id="modal-reply-editor" class="hidden pt-3 border-t border-white/15">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-bold text-amber-200">🥥 回复对方</span>
+            <span class="text-[11px] text-slate-400">对方打开自己彩球时可见</span>
+          </div>
+          <div class="flex gap-2">
+            <input type="text" id="input-host-reply" maxlength="180" placeholder="写下你想对 Ta 说的回复..."
+              class="flex-1 px-3.5 py-2.5 rounded-xl bg-slate-950/85 border border-white/20 text-white placeholder-slate-500 text-xs sm:text-sm focus:outline-none focus:border-amber-300" />
+            <button id="btn-save-reply" class="px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-200 to-amber-400 text-slate-950 font-bold text-xs sm:text-sm hover:brightness-105 transition shrink-0">
+              发送
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 场景 B：普通访客查看他人彩球（严格加密，绝不泄漏任何留言与回复） -->
+      <div id="modal-locked-content" class="hidden">
+        <div class="p-5 rounded-2xl bg-slate-950/75 border border-amber-200/20 text-center space-y-2">
+          <div class="w-11 h-11 rounded-full bg-amber-300/10 border border-amber-300/30 flex items-center justify-center text-lg mx-auto">
+            🔒
+          </div>
+          <p class="text-xs sm:text-sm text-slate-200 leading-relaxed">
+            🔒 此悄悄话已加密封存，仅椰子本人输入专属暗号后可拆阅
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== 弹窗 2：椰子主人身份认证 ==================== -->
+  <div id="modal-host-auth" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+    <div class="velvet-glass gold-inner-frame w-full max-w-sm rounded-3xl p-6 relative animate-reveal">
+      <button id="btn-close-host-modal" class="absolute top-4 right-4 z-10 w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-slate-300">
+        ✕
+      </button>
+      <div class="text-center mb-4">
+        <div class="w-12 h-12 rounded-2xl bg-amber-300/15 border border-amber-300/35 flex items-center justify-center text-xl mx-auto mb-3 text-amber-200 font-serif-sc font-bold">
+          椰
+        </div>
+        <h3 class="font-serif-sc text-lg font-bold text-white">解锁椰子的私密信箱</h3>
+        <p class="text-xs text-slate-400 mt-1">
+          请输入主人专属暗号以拆阅所有悄悄话
+        </p>
+      </div>
+      <input type="password" id="input-host-passcode" placeholder="请输入主人专属暗号"
+        class="w-full px-4 py-3 rounded-2xl bg-slate-950/85 border border-amber-300/25 text-white text-sm mb-3 focus:outline-none focus:border-amber-300 text-center tracking-wider" />
+      <button id="btn-confirm-host" class="w-full py-3 rounded-full bg-gradient-to-r from-amber-200 via-amber-300 to-amber-400 text-slate-950 font-bold text-sm hover:brightness-105 transition shadow-lg">
+        验证并解锁
+      </button>
+    </div>
+  </div>
+
+  <!-- 全局轻提示 Toast -->
+  <div id="toast-box" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-[60] pointer-events-none opacity-0 transition-all duration-300 transform translate-y-4">
+    <div class="px-5 py-2.5 rounded-full bg-slate-950/95 border border-amber-300/40 text-amber-100 text-xs sm:text-sm font-medium shadow-2xl">
+      <span id="toast-msg">操作成功</span>
+    </div>
+  </div>
+
+  <!-- 核心逻辑脚本 -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+    import { getFirestore, collection, addDoc, doc, updateDoc, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+    // =========================================================================
+    // 1. 11道专属题目（所有选项格式、词性、长度高度统一，干净纯中文短语）
+    // =========================================================================
+    const QUIZ_QUESTIONS = [
+      {
+        id: 1,
+        tag: "季节偏好",
+        question: "椰子最喜欢的季节是哪一个？",
+        correct: "喜欢夏天",
+        options: ["喜欢春天", "喜欢夏天", "喜欢秋天", "喜欢冬天"]
+      },
+      {
+        id: 2,
+        tag: "冬日角落",
+        question: "冬日里椰子最爱的惬意角落是？",
+        correct: "在壁炉边的毯子下",
+        options: ["在壁炉边的毯子下", "在阳台的摇椅上", "在窗边的书桌前", "在客厅的沙发里"]
+      },
+      {
+        id: 3,
+        tag: "日常饮品",
+        question: "椰子日常最常点的饮品是哪款？",
+        correct: "冰美式咖啡",
+        options: ["热焦糖拿铁", "冰美式咖啡", "抹茶燕麦奶", "手冲乌龙茶"]
+      },
+      {
+        id: 4,
+        tag: "星座密码",
+        question: "椰子的星座是哪一个？",
+        correct: "狮子座",
+        options: ["白羊座", "射手座", "狮子座", "天秤座"]
+      },
+      {
+        id: 5,
+        tag: "萌宠记忆",
+        question: "椰子曾经养过什么可爱宠物？",
+        correct: "养过可爱猫咪",
+        options: ["养过温顺小狗", "养过垂耳兔子", "养过虎皮鹦鹉", "养过可爱猫咪"]
+      },
+      {
+        id: 6,
+        tag: "圣诞色彩",
+        question: "椰子最偏爱的圣诞色彩是哪种？",
+        correct: "经典圣诞红",
+        options: ["经典圣诞红", "森林松柏绿", "星光香槟金", "初雪珍珠白"]
+      },
+      {
+        id: 7,
+        tag: "周末作息",
+        question: "休息日不用早起时椰子通常睡到几点？",
+        correct: "一般睡到中午",
+        options: ["早上八点起床", "一般睡到中午", "上午十点起床", "下午两点起床"]
+      },
+      {
+        id: 8,
+        tag: "向往旅行",
+        question: "椰子最向往的度假目的地是哪里？",
+        correct: "热带阳光海岛",
+        options: ["北欧极光雪原", "江南烟雨古镇", "热带阳光海岛", "瑞士阿尔卑斯"]
+      },
+      {
+        id: 9,
+        tag: "甜品偏好",
+        question: "下午茶时间椰子最喜欢的甜品是？",
+        correct: "蓝莓巴斯克蛋糕",
+        options: ["草莓奶油蛋糕", "海盐奥利奥乳酪", "经典提拉米苏", "蓝莓巴斯克蛋糕"]
+      },
+      {
+        id: 10,
+        tag: "圣诞仪式",
+        question: "装饰圣诞树时椰子第一步先挂什么？",
+        correct: "先挂树顶金星",
+        options: ["先挂树顶金星", "先缠暖光灯串", "先挂红色彩球", "先放树下礼盒"]
+      },
+      {
+        id: 11,
+        tag: "近期爱好",
+        question: "椰子最近迷上的解压小爱好是什么？",
+        correct: "拼贴造景贴纸",
+        options: ["拼装微缩积木", "拼贴造景贴纸", "涂色数字油画", "钩织毛线玩偶"]
+      }
+    ];
+
+    // =========================================================================
+    // 2. 0~11 分对应的 12 种专属颜色水晶球、关系评价与未来建议
+    // =========================================================================
+    const SCORE_TIERS = [
+      {
+        score: 0,
+        ballName: "初雪霜雾银",
+        primary: "#e2e8f0",
+        secondary: "#94a3b8",
+        glow: "rgba(226, 232, 240, 0.75)",
+        title: "神秘初见客",
+        evaluation: "虽然这次完美避开了所有选项，但也意味着你们之间还藏着 100% 的新鲜故事等待开启。",
+        future: "未来可以从一起喝杯冰美式破冰开始，慢慢听椰子分享生活里的有趣日常。"
+      },
+      {
+        score: 1,
+        ballName: "月光冷萃灰",
+        primary: "#cbd5e1",
+        secondary: "#475569",
+        glow: "rgba(148, 163, 184, 0.75)",
+        title: "边缘观察员",
+        evaluation: "答对了 1 道题，已经捕捉到了椰子性格里的一丝小线索，友谊的序章正在悄悄翻开。",
+        future: "未来可以一起坐下来拼贴造景贴纸，在安静又治愈的手作时光里拉近距离。"
+      },
+      {
+        score: 2,
+        ballName: "海盐微风蓝",
+        primary: "#7dd3fc",
+        secondary: "#0284c7",
+        glow: "rgba(125, 211, 252, 0.8)",
+        title: "点头之交友",
+        evaluation: "答对 2 题，你对椰子已经有了一点初步印象，虽然细节还待探索，但相处起来一定很轻松。",
+        future: "未来可以约一个悠闲的下午茶，一起分食一块蓝莓巴斯克蛋糕，聊聊彼此的近况。"
+      },
+      {
+        score: 3,
+        ballName: "薄荷苏打青",
+        primary: "#5eead4",
+        secondary: "#0f766e",
+        glow: "rgba(94, 234, 212, 0.8)",
+        title: "偶尔冒泡党",
+        evaluation: "答对 3 题，说明你记住了椰子的一些生活小片段，是很有潜力的宝藏朋友人选。",
+        future: "未来可以一起分享云吸猫日常，交流各自关于小动物的温暖记忆。"
+      },
+      {
+        score: 4,
+        ballName: "晴空浅湖蓝",
+        primary: "#38bdf8",
+        secondary: "#1d4ed8",
+        glow: "rgba(56, 189, 248, 0.82)",
+        title: "普通好朋友",
+        evaluation: "答对 4 题，你的直觉很不错，已经掌握了椰子将近四成的喜好密码，在一起总是很愉快。",
+        future: "未来等夏天来临的时候，一起在晚风里散步闲聊，享受自在惬意的时光。"
+      },
+      {
+        score: 5,
+        ballName: "蜜桃乌龙粉",
+        primary: "#f9a8d4",
+        secondary: "#db2777",
+        glow: "rgba(249, 168, 212, 0.85)",
+        title: "微甜陪伴者",
+        evaluation: "答对 5 题，接近及格线啦！你对椰子的日常作息和喜好挺熟悉的，彼此之间有不少共同话题。",
+        future: "未来周末一起睡到中午自然醒，再慢悠悠出门去打卡新开的甜品小店。"
+      },
+      {
+        score: 6,
+        ballName: "琥珀焦糖橘",
+        primary: "#fdba74",
+        secondary: "#ea580c",
+        glow: "rgba(251, 146, 60, 0.85)",
+        title: "合拍饭搭子",
+        evaluation: "成功跨过及格线！答对 6 题说明你平时真的有留意过椰子的喜好，你们在很多生活习惯上都很合拍。",
+        future: "未来寒冷的冬日里，一起窝在壁炉边的暖毯子下追剧聊天，度过慵懒治愈的周末。"
+      },
+      {
+        score: 7,
+        ballName: "向日葵暖黄",
+        primary: "#fde047",
+        secondary: "#ca8a04",
+        glow: "rgba(250, 204, 21, 0.88)",
+        title: "快乐充电宝",
+        evaluation: "答对 7 题，超过六成的默契度！你不仅记得椰子喜欢什么，更懂得这份热爱背后的小确幸。",
+        future: "未来可以一起规划一趟轻松的周边短途旅行，拍下许多值得珍藏的合照。"
+      },
+      {
+        score: 8,
+        ballName: "翡翠森林绿",
+        primary: "#34d399",
+        secondary: "#047857",
+        glow: "rgba(52, 211, 153, 0.9)",
+        title: "默契知心人",
+        evaluation: "答对 8 题，相当厉害！你绝对是椰子身边的默契知心人，连狮子座的小习惯都了解得清清楚楚。",
+        future: "未来可以各自捧着一杯冰美式咖啡，在阳光正好的午后畅谈天马行空的梦想。"
+      },
+      {
+        score: 9,
+        ballName: "紫罗兰星云",
+        primary: "#c084fc",
+        secondary: "#7e22ce",
+        glow: "rgba(192, 132, 252, 0.92)",
+        title: "灵魂共振体",
+        evaluation: "答对 9 题，仅差两步就登顶满分！你对椰子的了解已经深入到了日常细节里，是名副其实的灵魂共振体。",
+        future: "未来圣诞节一起亲手装点圣诞树（记得让椰子先挂树顶金星），再一起完成整本造景贴纸。"
+      },
+      {
+        score: 10,
+        ballName: "玫瑰酒红宝石",
+        primary: "#fb7185",
+        secondary: "#be123c",
+        glow: "rgba(244, 63, 94, 0.95)",
+        title: "挚友天花板",
+        evaluation: "惊人的 10 题答对！只差毫厘就是全满贯，这份神级默契打败了绝大多数人，堪称挚友天花板。",
+        future: "未来一定要一起飞去热带阳光海岛度假躺平，在海风与蓝莓巴斯克蛋糕的陪伴下享受假期。"
+      },
+      {
+        score: 11,
+        ballName: "至尊星耀流金",
+        primary: "#fef08a",
+        secondary: "#d97706",
+        glow: "rgba(250, 204, 21, 1)",
+        title: "椰子唯一认证本命",
+        evaluation: "11 题全对！100% 无死角懂椰子！从季节、咖啡、星座到作息和造景贴纸，你把椰子的每一个喜好都牢牢记在了心上。",
+        future: "未来要一起迎接无数个灿烂的夏天、奔赴向往的热带阳光海岛、吃遍全城的蓝莓巴斯克蛋糕，岁岁年年都一起点亮这棵圣诞树！"
+      }
+    ];
+
+    const TREE_SLOTS = [
+      { x: 50, y: 23 },
+      { x: 41, y: 32 }, { x: 59, y: 32 },
+      { x: 34, y: 43 }, { x: 50, y: 42 }, { x: 66, y: 43 },
+      { x: 28, y: 55 }, { x: 43, y: 54 }, { x: 57, y: 54 }, { x: 72, y: 55 },
+      { x: 23, y: 67 }, { x: 37, y: 66 }, { x: 50, y: 67 }, { x: 63, y: 66 }, { x: 77, y: 67 },
+      { x: 18, y: 78 }, { x: 32, y: 79 }, { x: 45, y: 78 }, { x: 56, y: 79 }, { x: 69, y: 78 }, { x: 82, y: 78 }
+    ];
+
+    // =========================================================================
+    // 3. 立体水晶星尘球 SVG 渲染器
+    // =========================================================================
+    function createCrystalBaubleSVG(score, size = 44, showScoreBadge = false) {
+      const tier = SCORE_TIERS[Math.max(0, Math.min(11, score))] || SCORE_TIERS[0];
+      const uid = `crystal-${score}-${Math.random().toString(36).slice(2, 7)}`;
+      const isHigh = score >= 9;
+
+      return `
+        <svg width="${size}" height="${size * 1.24}" viewBox="0 0 64 80" class="overflow-visible" style="filter: drop-shadow(0 6px 12px ${tier.glow});">
+          <defs>
+            <radialGradient id="${uid}-body" cx="32%" cy="26%" r="72%">
+              <stop offset="0%" stop-color="#ffffff" stop-opacity="0.98" />
+              <stop offset="22%" stop-color="${tier.primary}" />
+              <stop offset="82%" stop-color="${tier.secondary}" />
+              <stop offset="100%" stop-color="#040812" stop-opacity="0.9" />
+            </radialGradient>
+            <linearGradient id="${uid}-crown" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#b45309" />
+              <stop offset="50%" stop-color="#fef08a" />
+              <stop offset="100%" stop-color="#b45309" />
+            </linearGradient>
+          </defs>
+          <line x1="32" y1="0" x2="32" y2="10" stroke="#fde68a" stroke-width="1.5" />
+          <circle cx="32" cy="11" r="3.2" fill="none" stroke="#fef08a" stroke-width="1.5" />
+          <rect x="25" y="13" width="14" height="6.5" rx="2" fill="url(#${uid}-crown)" stroke="#fef9c3" stroke-width="0.7" />
+          <circle cx="32" cy="44" r="25" fill="url(#${uid}-body)" stroke="${isHigh ? '#fef08a' : 'rgba(255,255,255,0.48)'}" stroke-width="${isHigh ? '1.8' : '1.1'}" />
+          <circle cx="24" cy="48" r="1.3" fill="#ffffff" opacity="0.75" />
+          <circle cx="41" cy="38" r="1.5" fill="#fef08a" opacity="0.85" />
+          <circle cx="37" cy="53" r="1.1" fill="#ffffff" opacity="0.65" />
+          ${score >= 6 ? `<path d="M8 44 Q32 53 56 44" stroke="rgba(254, 240, 138, 0.55)" stroke-width="1.5" fill="none" stroke-dasharray="3 2" />` : ''}
+          ${score === 11 ? `<polygon points="32,29 34.8,36.5 42.5,37 36.2,41.8 38.2,49.5 32,45 25.8,49.5 27.8,41.8 21.5,37 29.2,36.5" fill="#fef9c3" opacity="0.95" />` : ''}
+          <ellipse cx="22" cy="32" rx="6" ry="3.4" transform="rotate(-34 22 32)" fill="#ffffff" opacity="0.78" />
+          <path d="M18 61 Q32 67 46 61" stroke="#ffffff" stroke-width="1.4" stroke-linecap="round" opacity="0.35" fill="none" />
+          ${showScoreBadge ? `
+            <circle cx="50" cy="59" r="10.5" fill="#07131d" stroke="#f6d365" stroke-width="1.5" />
+            <text x="50" y="62.8" text-anchor="middle" fill="#fef08a" font-size="10.5" font-weight="800" font-family="Nunito, sans-serif">${score}</text>
+          ` : ''}
+        </svg>
+      `;
+    }
+
+    // =========================================================================
+    // 4. 本地状态与严格隐私权限控制（暗号：coco-leying-susan-jiang）
+    // =========================================================================
+    const HOST_SECRET_PASSCODE = "coco-leying-susan-jiang";
+    const STORAGE_KEY_COMPLETED = "yezi_tree_v3_completed";
+    const STORAGE_KEY_RESULT = "yezi_tree_v3_result";
+    const STORAGE_KEY_MY_ORNAMENT_IDS = "yezi_tree_v3_my_ids";
+    const STORAGE_KEY_HOST = "yezi_tree_v3_host_unlocked";
+
+    let currentQuestions = [];
+    let currentIndex = 0;
+    let liveScore = 0;
+    let userAnswersLog = [];
+    let isTransitioning = false;
+
+    let allOrnaments = [];
+    let activeModalOrnamentId = null;
+    let isHostMode = localStorage.getItem(STORAGE_KEY_HOST) === "true";
+
+    function getMyOrnamentIds() {
+      try {
+        return JSON.parse(localStorage.getItem(STORAGE_KEY_MY_ORNAMENT_IDS) || "[]");
+      } catch {
+        return [];
+      }
+    }
+
+    function addMyOrnamentId(id) {
+      const ids = getMyOrnamentIds();
+      if (!ids.includes(id)) {
+        ids.push(id);
+        localStorage.setItem(STORAGE_KEY_MY_ORNAMENT_IDS, JSON.stringify(ids));
+      }
+    }
+
+    // 权限判断：仅解锁后的椰子（暗号 coco-leying-susan-jiang）或挂球本人可看悄悄话
+    function canViewOrnamentSecret(ornamentItem) {
+      if (isHostMode) return true;
+      if (ornamentItem.id === "welcome-yezi") return true;
+      const myIds = getMyOrnamentIds();
+      return myIds.includes(ornamentItem.id);
+    }
+
+    let db = null;
+    let auth = null;
+    let currentUser = null;
+    const appId = typeof __app_id !== "undefined" ? __app_id : "yezi-christmas-tree-v3";
+
+    const DEFAULT_WELCOME_ORNAMENT = {
+      id: "welcome-yezi",
+      nickname: "椰子",
+      score: 11,
+      message: "欢迎来到我的冬日秘密圣诞树！测测你有多了解我，把你的专属水晶球挂上来，写给我的悄悄话只有我能看见哦~",
+      reply: "每一封悄悄话我都会认真拆阅并回复的！",
+      createdAtMs: Date.now() - 3600000
+    };
+
+    // =========================================================================
+    // 5. Firebase 云端实时数据同步
+    // =========================================================================
+    async function initCloudStorage() {
+      try {
+        if (typeof __firebase_config !== "undefined" && __firebase_config) {
+          const firebaseConfig = JSON.parse(__firebase_config);
+          const app = initializeApp(firebaseConfig);
+          auth = getAuth(app);
+          db = getFirestore(app);
+
+          if (typeof __initial_auth_token !== "undefined" && __initial_auth_token) {
+            await signInWithCustomToken(auth, __initial_auth_token);
+          } else {
+            await signInAnonymously(auth);
+          }
+          currentUser = auth.currentUser;
+
+          if (currentUser && db) {
+            const ornamentsCol = collection(db, "artifacts", appId, "public", "data", "ornaments");
+            onSnapshot(
+              ornamentsCol,
+              (snapshot) => {
+                const fetched = [];
+                snapshot.forEach((docSnap) => {
+                  fetched.push({ id: docSnap.id, ...docSnap.data() });
+                });
+                fetched.sort((a, b) => (a.createdAtMs || 0) - (b.createdAtMs || 0));
+                allOrnaments = [DEFAULT_WELCOME_ORNAMENT, ...fetched];
+                refreshTreeAndPanels();
+              },
+              (err) => {
+                console.error("Firestore listener error:", err);
+                allOrnaments = [DEFAULT_WELCOME_ORNAMENT];
+                refreshTreeAndPanels();
+              }
+            );
+            return;
+          }
+        }
+      } catch (e) {
+        console.warn("Local fallback mode:", e);
+      }
+
+      allOrnaments = [DEFAULT_WELCOME_ORNAMENT];
+      refreshTreeAndPanels();
+    }
+
+    function refreshTreeAndPanels() {
+      renderTreeOrnaments();
+      renderBottomPanelsByPermission();
+    }
+
+    // =========================================================================
+    // 6. 页面路由与二次进入自动直达圣诞树
+    // =========================================================================
+    const viewQuiz = document.getElementById("view-quiz");
+    const viewResult = document.getElementById("view-result");
+    const viewTree = document.getElementById("view-tree");
+
+    function switchView(target) {
+      viewQuiz.classList.add("hidden");
+      viewResult.classList.add("hidden");
+      viewTree.classList.add("hidden");
+
+      if (target === "quiz") {
+        viewQuiz.classList.remove("hidden");
+      } else if (target === "result") {
+        viewResult.classList.remove("hidden");
+      } else if (target === "tree") {
+        viewTree.classList.remove("hidden");
+        refreshTreeAndPanels();
+      }
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function checkInitialRoute() {
+      const hasCompleted = localStorage.getItem(STORAGE_KEY_COMPLETED) === "true";
+      const savedResultRaw = localStorage.getItem(STORAGE_KEY_RESULT);
+
+      if (savedResultRaw) {
+        document.getElementById("btn-view-my-report").classList.remove("hidden");
+      }
+
+      // 第二次进入自动平滑跳过开场与答题，直接进入圣诞树主场景
+      if (hasCompleted) {
+        switchView("tree");
+      } else {
+        switchView("quiz");
+        document.getElementById("quiz-intro-card").classList.remove("hidden");
+        document.getElementById("quiz-question-card").classList.add("hidden");
+      }
+    }
+
+    // =========================================================================
+    // 7. 11道题随机洗牌与无剧透平滑答题逻辑
+    // =========================================================================
+    function shuffleArray(arr) {
+      const copy = [...arr];
+      for (let i = copy.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy;
+    }
+
+    function startQuiz() {
+      currentQuestions = QUIZ_QUESTIONS.map((q, idx) => {
+        let shuffled = shuffleArray(q.options);
+        // 确保正确答案均匀分布在 A/B/C/D 各个位置
+        if (idx % 4 !== 0 && shuffled[0] === q.correct) {
+          const swapIdx = (idx % 3) + 1;
+          [shuffled[0], shuffled[swapIdx]] = [shuffled[swapIdx], shuffled[0]];
+        }
+        return { ...q, shuffledOptions: shuffled };
+      });
+
+      currentIndex = 0;
+      liveScore = 0;
+      userAnswersLog = [];
+      isTransitioning = false;
+
+      document.getElementById("quiz-intro-card").classList.add("hidden");
+      document.getElementById("quiz-question-card").classList.remove("hidden");
+      renderCurrentQuestion();
+    }
+
+    function renderCurrentQuestion() {
+      isTransitioning = false;
+      const q = currentQuestions[currentIndex];
+      const letters = ["A", "B", "C", "D"];
+
+      document.getElementById("q-current-num").textContent = currentIndex + 1;
+      document.getElementById("q-progress-bar").style.width = `${((currentIndex + 1) / currentQuestions.length) * 100}%`;
+      document.getElementById("q-tag").textContent = q.tag;
+      document.getElementById("q-title").textContent = q.question;
+
+      const container = document.getElementById("q-options-container");
+      container.innerHTML = "";
+
+      q.shuffledOptions.forEach((optText, idx) => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "quiz-option-card w-full text-left px-4 py-3.5 rounded-2xl bg-slate-950/60 border border-amber-200/15 flex items-center gap-3.5 text-sm sm:text-base text-slate-100";
+        btn.innerHTML = `
+          <span class="w-7 h-7 rounded-full bg-amber-300/12 border border-amber-300/30 text-amber-200 font-num font-bold text-xs flex items-center justify-center shrink-0">
+            ${letters[idx]}
+          </span>
+          <span class="flex-1 font-normal tracking-wide">${optText}</span>
+        `;
+        btn.addEventListener("click", () => handleSelectOption(optText, btn));
+        container.appendChild(btn);
+      });
+    }
+
+    // 绝对不在答题过程中揭示正确答案，仅高亮已选态并平滑进入下一题
+    function handleSelectOption(chosenText, clickedBtn) {
+      if (isTransitioning) return;
+      isTransitioning = true;
+
+      const q = currentQuestions[currentIndex];
+      const isCorrect = chosenText === q.correct;
+      if (isCorrect) {
+        liveScore++;
+      }
+
+      userAnswersLog.push({
+        id: q.id,
+        question: q.question,
+        chosen: chosenText,
+        isCorrect
+      });
+
+      const allBtns = document.querySelectorAll("#q-options-container button");
+      allBtns.forEach((b) => {
+        b.disabled = true;
+        if (b === clickedBtn) {
+          b.classList.remove("bg-slate-950/60", "border-amber-200/15");
+          b.classList.add("bg-amber-300/20", "border-amber-300", "text-amber-100");
+        } else {
+          b.classList.add("opacity-45");
+        }
+      });
+
+      setTimeout(() => {
+        if (currentIndex < currentQuestions.length - 1) {
+          currentIndex++;
+          renderCurrentQuestion();
+        } else {
+          finishQuiz();
+        }
+      }, 280);
+    }
+
+    function finishQuiz() {
+      const resultPayload = {
+        score: liveScore,
+        answersLog: userAnswersLog,
+        completedAt: Date.now()
+      };
+
+      localStorage.setItem(STORAGE_KEY_COMPLETED, "true");
+      localStorage.setItem(STORAGE_KEY_RESULT, JSON.stringify(resultPayload));
+      document.getElementById("btn-view-my-report").classList.remove("hidden");
+
+      renderResultView(resultPayload, true);
+      switchView("result");
+    }
+
+    // =========================================================================
+    // 8. 渲染烫金鉴定卡片与不剧透对错清单
+    // =========================================================================
+    function renderResultView(resultData, showHangForm = true) {
+      const { score, answersLog } = resultData;
+      const tier = SCORE_TIERS[Math.max(0, Math.min(11, score))];
+
+      document.getElementById("result-ornament-preview").innerHTML = createCrystalBaubleSVG(score, 84, false);
+      document.getElementById("result-ball-name").textContent = tier.ballName;
+      document.getElementById("result-score-num").textContent = score;
+      document.getElementById("result-rel-title").textContent = tier.title;
+      document.getElementById("result-rel-desc").textContent = tier.evaluation;
+      document.getElementById("result-future-plan").textContent = tier.future;
+
+      const hangFormCard = document.getElementById("hang-form-card");
+      if (showHangForm) {
+        hangFormCard.classList.remove("hidden");
+      } else {
+        hangFormCard.classList.add("hidden");
+      }
+
+      const reviewList = document.getElementById("answers-review-list");
+      reviewList.innerHTML = "";
+      document.getElementById("review-badge").textContent = `对 ${score} · 错 ${11 - score}`;
+
+      // 仅显示每道题你的选择是 ✅ 回答正确 还是 ❌ 回答错误，绝不直接给出正确答案
+      answersLog.forEach((item, idx) => {
+        const card = document.createElement("div");
+        card.className = `p-3.5 rounded-2xl border ${
+          item.isCorrect
+            ? "bg-emerald-950/35 border-emerald-500/30"
+            : "bg-rose-950/35 border-rose-500/30"
+        }`;
+
+        card.innerHTML = `
+          <div class="flex items-start justify-between gap-2">
+            <p class="text-xs sm:text-sm font-medium text-slate-100">
+              <span class="font-num text-amber-300/85 mr-1">${idx + 1}.</span>${item.question}
+            </p>
+            <span class="shrink-0 text-xs font-bold px-2.5 py-0.5 rounded-full ${
+              item.isCorrect ? "bg-emerald-500/20 text-emerald-300" : "bg-rose-500/20 text-rose-300"
+            }">
+              ${item.isCorrect ? "✅ 回答正确" : "❌ 回答错误"}
+            </span>
+          </div>
+          <p class="mt-1.5 text-xs ${item.isCorrect ? "text-emerald-200/90" : "text-rose-200/90"}">
+            你的选择：${item.chosen}
+          </p>
+        `;
+        reviewList.appendChild(card);
+      });
+    }
+
+    // =========================================================================
+    // 9. 封存悄悄话并挂球上树
+    // =========================================================================
+    document.getElementById("hang-ornament-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const nickname = document.getElementById("input-nickname").value.trim();
+      const message = document.getElementById("input-message").value.trim();
+      if (!nickname || !message) return;
+
+      const btn = document.getElementById("btn-submit-ornament");
+      btn.disabled = true;
+      btn.textContent = "正在挂上树梢...";
+
+      const savedResultRaw = localStorage.getItem(STORAGE_KEY_RESULT);
+      const score = savedResultRaw ? JSON.parse(savedResultRaw).score : liveScore;
+
+      const newOrnamentData = {
+        nickname,
+        score,
+        message,
+        reply: "",
+        createdAtMs: Date.now(),
+        uid: currentUser?.uid || "guest"
+      };
+
+      try {
+        if (db && currentUser) {
+          const ornamentsCol = collection(db, "artifacts", appId, "public", "data", "ornaments");
+          const docRef = await addDoc(ornamentsCol, {
+            ...newOrnamentData,
+            createdAt: serverTimestamp()
+          });
+          addMyOrnamentId(docRef.id);
+        } else {
+          const localId = "local-" + Date.now();
+          allOrnaments.push({ id: localId, ...newOrnamentData });
+          addMyOrnamentId(localId);
+        }
+
+        showToast("🎄 水晶球已挂上树梢！悄悄话仅椰子解锁后可见");
+        document.getElementById("input-message").value = "";
+        switchView("tree");
+      } catch (err) {
+        console.error("Failed to save ornament:", err);
+        showToast("⚠️ 网络开小差了，请再试一次");
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "封存悄悄话并挂上圣诞树";
+      }
+    });
+
+    // =========================================================================
+    // 10. 渲染树上水晶球与严格权限区分面板
+    // =========================================================================
+    function getSlotPosition(index) {
+      if (index < TREE_SLOTS.length) {
+        return TREE_SLOTS[index];
+      }
+      const y = Math.min(82, 34 + ((index * 13) % 48));
+      const halfWidth = ((y - 16) / 68) * 33;
+      const offset = (((index * 37) % 100) / 100) * 2 - 1;
+      const x = 50 + offset * halfWidth;
+      return { x, y };
+    }
+
+    function renderTreeOrnaments() {
+      const layer = document.getElementById("ornaments-layer");
+      layer.innerHTML = "";
+      document.getElementById("tree-total-count").textContent = allOrnaments.length;
+      document.getElementById("privacy-total-count").textContent = allOrnaments.length;
+
+      const myIds = getMyOrnamentIds();
+
+      allOrnaments.forEach((item, idx) => {
+        const pos = getSlotPosition(idx);
+        const node = document.createElement("button");
+        node.type = "button";
+        node.className = "tree-bauble-btn group flex flex-col items-center focus:outline-none";
+        node.style.left = `${pos.x}%`;
+        node.style.top = `${pos.y}%`;
+
+        const swayDelay = (idx % 5) * 0.45;
+        const hasReplyDot = item.reply && item.reply.trim().length > 0;
+        const isMine = myIds.includes(item.id);
+
+        node.innerHTML = `
+          <div class="bauble-sway relative flex flex-col items-center" style="animation-delay: ${swayDelay}s;">
+            ${createCrystalBaubleSVG(item.score, 40, true)}
+            ${hasReplyDot && (isHostMode || isMine) ? `<span title="椰子已回复" class="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-emerald-400 border border-slate-950 shadow"></span>` : ""}
+            <span class="-mt-1 px-1.5 py-0.2 rounded kraft-tag text-[9.5px] font-bold max-w-[70px] truncate">
+              ${escapeHTML(item.nickname)}
+            </span>
+          </div>
+        `;
+
+        node.addEventListener("click", () => openOrnamentModal(item));
+        layer.appendChild(node);
+      });
+    }
+
+    function renderBottomPanelsByPermission() {
+      const visitorPanel = document.getElementById("visitor-privacy-panel");
+      const hostMailbox = document.getElementById("host-secret-mailbox");
+
+      if (isHostMode) {
+        visitorPanel.classList.add("hidden");
+        hostMailbox.classList.remove("hidden");
+        renderHostSecretMailbox();
+      } else {
+        hostMailbox.classList.add("hidden");
+        visitorPanel.classList.remove("hidden");
+        renderVisitorOwnOrnamentOnly();
+      }
+    }
+
+    function renderVisitorOwnOrnamentOnly() {
+      const myIds = getMyOrnamentIds();
+      const myItems = allOrnaments.filter((o) => myIds.includes(o.id));
+      const box = document.getElementById("my-own-ornament-box");
+      const cardContainer = document.getElementById("my-own-ornament-card");
+
+      if (myItems.length === 0) {
+        box.classList.add("hidden");
+        return;
+      }
+
+      box.classList.remove("hidden");
+      cardContainer.innerHTML = "";
+
+      myItems.forEach((item) => {
+        const tier = SCORE_TIERS[Math.max(0, Math.min(11, item.score))] || SCORE_TIERS[0];
+        const card = document.createElement("div");
+        card.className = "p-4 rounded-2xl bg-slate-950/70 border border-amber-300/25 mb-2.5 cursor-pointer hover:border-amber-300/50 transition";
+        card.addEventListener("click", () => openOrnamentModal(item));
+
+        card.innerHTML = `
+          <div class="flex items-start gap-3">
+            <div class="shrink-0">${createCrystalBaubleSVG(item.score, 36, false)}</div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center justify-between gap-2 flex-wrap">
+                <span class="font-bold text-sm text-amber-200">${escapeHTML(item.nickname)} · 答对 ${item.score}/11 题</span>
+                <span class="text-[11px] text-slate-400">${tier.ballName}</span>
+              </div>
+              <p class="text-xs sm:text-sm text-slate-200 mt-1.5 leading-relaxed break-words">
+                “${escapeHTML(item.message)}”
+              </p>
+              ${
+                item.reply
+                  ? `<div class="mt-2.5 pl-3 border-l-2 border-emerald-400 text-xs text-emerald-200 bg-emerald-500/10 py-1.5 px-2.5 rounded-r-xl">
+                      <strong class="text-emerald-300">🥥 椰子的回复：</strong>${escapeHTML(item.reply)}
+                    </div>`
+                  : `<p class="mt-2 text-[11px] text-slate-400">悄悄话已加密送达，等待椰子解锁拆阅...</p>`
+              }
+            </div>
+          </div>
+        `;
+        cardContainer.appendChild(card);
+      });
+    }
+
+    function renderHostSecretMailbox() {
+      const feedList = document.getElementById("messages-feed-list");
+      feedList.innerHTML = "";
+      document.getElementById("feed-count-badge").textContent = `共 ${allOrnaments.length} 封`;
+
+      const reversed = [...allOrnaments].reverse();
+      reversed.forEach((item) => {
+        const tier = SCORE_TIERS[Math.max(0, Math.min(11, item.score))] || SCORE_TIERS[0];
+        const card = document.createElement("div");
+        card.className = "p-4 rounded-2xl bg-slate-950/70 border border-amber-300/20 hover:border-amber-300/50 transition cursor-pointer";
+        card.addEventListener("click", () => openOrnamentModal(item));
+
+        card.innerHTML = `
+          <div class="flex items-start gap-3">
+            <div class="shrink-0 mt-0.5">${createCrystalBaubleSVG(item.score, 36, false)}</div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center justify-between gap-2 flex-wrap">
+                <div class="flex items-center gap-2">
+                  <span class="font-bold text-sm text-white">${escapeHTML(item.nickname)}</span>
+                  <span class="text-[11px] px-2 py-0.5 rounded-full bg-amber-300/15 text-amber-200 font-medium">
+                    答对 ${item.score}/11 题 · ${tier.ballName}
+                  </span>
+                </div>
+                <span class="text-[11px] text-slate-400">${formatTime(item.createdAtMs)}</span>
+              </div>
+              <p class="text-xs sm:text-sm text-amber-50 mt-1.5 leading-relaxed break-words">
+                ${escapeHTML(item.message)}
+              </p>
+              ${
+                item.reply
+                  ? `<div class="mt-2.5 pl-3 border-l-2 border-emerald-400 text-xs text-emerald-200 bg-emerald-500/10 py-1.5 px-2.5 rounded-r-xl">
+                      <strong class="text-emerald-300">🥥 我的回复：</strong>${escapeHTML(item.reply)}
+                    </div>`
+                  : `<div class="mt-2 text-[11px] text-amber-300/85 font-medium">点击回复这条悄悄话 →</div>`
+              }
+            </div>
+          </div>
+        `;
+        feedList.appendChild(card);
+      });
+    }
+
+    function renderLegendGrid() {
+      const grid = document.getElementById("legend-grid");
+      grid.innerHTML = "";
+      SCORE_TIERS.forEach((t) => {
+        const el = document.createElement("div");
+        el.className = "flex items-center gap-1.5 px-2 py-1.5 rounded-xl bg-slate-950/60 border border-white/5";
+        el.innerHTML = `
+          <span class="w-3 h-3 rounded-full shrink-0 border border-white/40" style="background: radial-gradient(circle at 30% 30%, #fff, ${t.primary}, ${t.secondary});"></span>
+          <span class="text-slate-300 truncate"><strong class="font-num text-amber-200">${t.score}分</strong> ${t.ballName}</span>
+        `;
+        grid.appendChild(el);
+      });
+    }
+
+    // =========================================================================
+    // 11. 彩球详情弹窗（严格权限控制）
+    // =========================================================================
+    function openOrnamentModal(item) {
+      activeModalOrnamentId = item.id;
+      const tier = SCORE_TIERS[Math.max(0, Math.min(11, item.score))] || SCORE_TIERS[0];
+
+      document.getElementById("modal-ornament-svg").innerHTML = createCrystalBaubleSVG(item.score, 54, false);
+      document.getElementById("modal-sender-name").textContent = item.nickname;
+      document.getElementById("modal-score-badge").textContent = `答对 ${item.score} / 11 题`;
+      document.getElementById("modal-rel-title").textContent = `${tier.ballName} · ${tier.title}`;
+      document.getElementById("modal-timestamp").textContent = formatTime(item.createdAtMs);
+
+      const unlockedBox = document.getElementById("modal-unlocked-content");
+      const lockedBox = document.getElementById("modal-locked-content");
+      const replyEditor = document.getElementById("modal-reply-editor");
+
+      if (canViewOrnamentSecret(item)) {
+        lockedBox.classList.add("hidden");
+        unlockedBox.classList.remove("hidden");
+
+        document.getElementById("modal-privacy-tag").textContent = isHostMode ? "👑 椰子拆阅视角" : "✨ 我的专属信笺";
+        document.getElementById("modal-message-text").textContent = item.message;
+
+        const replyDisplay = document.getElementById("modal-reply-display");
+        const replyInput = document.getElementById("input-host-reply");
+
+        if (item.reply && item.reply.trim()) {
+          replyDisplay.classList.remove("hidden");
+          document.getElementById("modal-reply-text").textContent = item.reply;
+          replyInput.value = item.reply;
+        } else {
+          replyDisplay.classList.add("hidden");
+          replyInput.value = "";
+        }
+
+        if (isHostMode) {
+          replyEditor.classList.remove("hidden");
+        } else {
+          replyEditor.classList.add("hidden");
+        }
+      } else {
+        unlockedBox.classList.add("hidden");
+        lockedBox.classList.remove("hidden");
+      }
+
+      document.getElementById("modal-ornament").classList.remove("hidden");
+    }
+
+    document.getElementById("btn-close-ornament-modal").addEventListener("click", () => {
+      document.getElementById("modal-ornament").classList.add("hidden");
+      activeModalOrnamentId = null;
+    });
+
+    document.getElementById("btn-save-reply").addEventListener("click", async () => {
+      if (!isHostMode || !activeModalOrnamentId) return;
+      const replyText = document.getElementById("input-host-reply").value.trim();
+
+      const btn = document.getElementById("btn-save-reply");
+      btn.disabled = true;
+      btn.textContent = "发送中";
+
+      try {
+        if (activeModalOrnamentId === "welcome-yezi") {
+          DEFAULT_WELCOME_ORNAMENT.reply = replyText;
+          refreshTreeAndPanels();
+        } else if (db && currentUser && !activeModalOrnamentId.startsWith("local-")) {
+          const docRef = doc(db, "artifacts", appId, "public", "data", "ornaments", activeModalOrnamentId);
+          await updateDoc(docRef, { reply: replyText });
+        } else {
+          const target = allOrnaments.find((o) => o.id === activeModalOrnamentId);
+          if (target) target.reply = replyText;
+          refreshTreeAndPanels();
+        }
+
+        if (replyText) {
+          document.getElementById("modal-reply-display").classList.remove("hidden");
+          document.getElementById("modal-reply-text").textContent = replyText;
+          showToast("🥥 回复已保存！");
+        } else {
+          document.getElementById("modal-reply-display").classList.add("hidden");
+          showToast("已清空回复");
+        }
+      } catch (err) {
+        console.error("Failed to save reply:", err);
+        showToast("⚠️ 回复失败，请稍后重试");
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "发送";
+      }
+    });
+
+    // =========================================================================
+    // 12. 椰子主人暗号认证（暗号：coco-leying-susan-jiang）
+    // =========================================================================
+    function updateHostModeUI() {
+      const dot = document.getElementById("host-badge-dot");
+      const text = document.getElementById("host-btn-text");
+      const banner = document.getElementById("host-mode-banner");
+
+      if (isHostMode) {
+        dot.classList.remove("bg-amber-300/50");
+        dot.classList.add("bg-emerald-400", "animate-pulse");
+        text.textContent = "椰子已解锁";
+        banner.classList.remove("hidden");
+      } else {
+        dot.classList.add("bg-amber-300/50");
+        dot.classList.remove("bg-emerald-400", "animate-pulse");
+        text.textContent = "椰子入口";
+        banner.classList.add("hidden");
+      }
+      refreshTreeAndPanels();
+    }
+
+    document.getElementById("btn-host-toggle").addEventListener("click", () => {
+      if (isHostMode) {
+        switchView("tree");
+        showToast("👑 你已处于椰子主人视角");
+      } else {
+        document.getElementById("input-host-passcode").value = "";
+        document.getElementById("modal-host-auth").classList.remove("hidden");
+      }
+    });
+
+    document.getElementById("btn-close-host-modal").addEventListener("click", () => {
+      document.getElementById("modal-host-auth").classList.add("hidden");
+    });
+
+    function verifyHostPasscode() {
+      const code = document.getElementById("input-host-passcode").value.trim();
+      if (code === HOST_SECRET_PASSCODE) {
+        isHostMode = true;
+        localStorage.setItem(STORAGE_KEY_HOST, "true");
+        updateHostModeUI();
+        document.getElementById("modal-host-auth").classList.add("hidden");
+        switchView("tree");
+        showToast("👑 解锁成功！欢迎回来，椰子");
+      } else {
+        showToast("❌ 暗号不正确，无法拆阅悄悄话");
+      }
+    }
+
+    document.getElementById("btn-confirm-host").addEventListener("click", verifyHostPasscode);
+    document.getElementById("input-host-passcode").addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        verifyHostPasscode();
+      }
+    });
+
+    document.getElementById("btn-exit-host").addEventListener("click", () => {
+      isHostMode = false;
+      localStorage.setItem(STORAGE_KEY_HOST, "false");
+      updateHostModeUI();
+      showToast("🔒 已锁定退出主人模式");
+    });
+
+    // 一键分享链接
+    document.getElementById("btn-share").addEventListener("click", () => {
+      const shareText = `🎄 椰子的冬日秘密圣诞树点亮啦！答对 11 道关于椰子的小问题，点亮专属颜色水晶球并挂上悄悄话吧 👉 ${window.location.href}`;
+      const tempInput = document.createElement("textarea");
+      tempInput.value = shareText;
+      tempInput.style.position = "fixed";
+      tempInput.style.opacity = "0";
+      document.body.appendChild(tempInput);
+      tempInput.select();
+      try {
+        document.execCommand("copy");
+        showToast("🔗 分享链接已复制，快发给好友吧");
+      } catch {
+        showToast("🔗 请复制浏览器地址栏链接分享");
+      }
+      document.body.removeChild(tempInput);
+    });
+
+    // 视图切换按钮绑定
+    document.getElementById("btn-start-quiz").addEventListener("click", startQuiz);
+    document.getElementById("btn-skip-to-tree").addEventListener("click", () => switchView("tree"));
+    document.getElementById("btn-retake-quiz").addEventListener("click", () => {
+      switchView("quiz");
+      startQuiz();
+    });
+    document.getElementById("btn-view-my-report").addEventListener("click", () => {
+      const savedResultRaw = localStorage.getItem(STORAGE_KEY_RESULT);
+      if (savedResultRaw) {
+        renderResultView(JSON.parse(savedResultRaw), true);
+        switchView("result");
+      }
+    });
+
+    // =========================================================================
+    // 13. 辅助工具与细腻景深飘雪画布
+    // =========================================================================
+    function showToast(msg) {
+      const box = document.getElementById("toast-box");
+      document.getElementById("toast-msg").textContent = msg;
+      box.classList.remove("opacity-0", "translate-y-4");
+      box.classList.add("opacity-100", "translate-y-0");
+      clearTimeout(window._toastTimer);
+      window._toastTimer = setTimeout(() => {
+        box.classList.add("opacity-0", "translate-y-4");
+        box.classList.remove("opacity-100", "translate-y-0");
+      }, 2600);
+    }
+
+    function escapeHTML(str) {
+      if (!str) return "";
+      return str.replace(/[&<>"']/g, (m) => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+      }[m]));
+    }
+
+    function formatTime(ms) {
+      if (!ms) return "刚刚";
+      const diff = Math.floor((Date.now() - ms) / 1000);
+      if (diff < 60) return "刚刚";
+      if (diff < 3600) return `${Math.floor(diff / 60)}分钟前`;
+      if (diff < 86400) return `${Math.floor(diff / 3600)}小时前`;
+      const d = new Date(ms);
+      return `${d.getMonth() + 1}月${d.getDate()}日`;
+    }
+
+    function initLayeredSnowfall() {
+      const canvas = document.getElementById("snow-canvas");
+      const ctx = canvas.getContext("2d");
+      let width = (canvas.width = window.innerWidth);
+      let height = (canvas.height = window.innerHeight);
+
+      const flakes = Array.from({ length: 75 }, (_, i) => {
+        const isForeground = i % 4 === 0;
+        return {
+          x: Math.random() * width,
+          y: Math.random() * height,
+          r: isForeground ? Math.random() * 2.2 + 1.8 : Math.random() * 1.3 + 0.5,
+          speedY: isForeground ? Math.random() * 0.95 + 0.55 : Math.random() * 0.45 + 0.2,
+          drift: Math.random() * Math.PI * 2,
+          opacity: isForeground ? Math.random() * 0.45 + 0.4 : Math.random() * 0.35 + 0.15
+        };
+      });
+
+      window.addEventListener("resize", () => {
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = window.innerHeight;
+      });
+
+      function loop() {
+        ctx.clearRect(0, 0, width, height);
+        flakes.forEach((f) => {
+          f.y += f.speedY;
+          f.drift += 0.012;
+          f.x += Math.sin(f.drift) * 0.4;
+
+          if (f.y > height + 6) {
+            f.y = -6;
+            f.x = Math.random() * width;
+          }
+          if (f.x > width) f.x = 0;
+          if (f.x < 0) f.x = width;
+
+          ctx.beginPath();
+          ctx.arc(f.x, f.y, f.r, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(255, 252, 242, ${f.opacity})`;
+          ctx.fill();
+        });
+        requestAnimationFrame(loop);
+      }
+      loop();
+    }
+
+    window.addEventListener("load", () => {
+      initLayeredSnowfall();
+      renderLegendGrid();
+      updateHostModeUI();
+      checkInitialRoute();
+      initCloudStorage();
+    });
+  </script>
+</body>
+</html>
