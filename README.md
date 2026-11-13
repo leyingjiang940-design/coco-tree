@@ -13,17 +13,20 @@
 
 官方说明：<https://docs.github.com/en/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site>
 
-## 重要：多人留言同步
+## 云端留言与主人登录
 
-网页在未连接数据库时会使用当前浏览器的本地存储；朋友之间不会自动共享留言。要让不同手机上的访客都看到同一棵树，并让主人跨设备回复，请配置 Supabase：
+本仓库已连接 Supabase 项目。朋友的留言会保存到共享数据库并通过 Realtime 同步；未配置主人邮箱前，主人回复入口仍保持锁定。
 
-1. 在 Supabase 创建项目。
-2. 在 SQL Editor 运行本仓库的 `supabase-schema.sql`。运行前将 `OWNER_EMAIL_HERE` 替换为主人登录 Supabase Auth 使用的邮箱。
-3. 在 Supabase Auth 中创建主人账号。
-4. 在 `index.html` 末尾配置区填写 `SUPABASE_URL`、`SUPABASE_ANON_KEY` 和 `OWNER_EMAIL`。
-5. 保存并重新上传 `index.html` 到 GitHub。
+### 绑定椰子主人账号
 
-**安全提醒：** 前端只能填写 Supabase 的 anon/public key。绝对不要把 `service_role` 密钥、数据库密码或 GitHub Token 写进网页或提交到仓库。
+1. 先确定椰子专用的登录邮箱。
+2. 在 Supabase Dashboard 的 **Authentication → URL Configuration** 中，把 Site URL 设为 `https://leyingjiang940-design.github.io/coco-tree/`，并把同一地址加入 Redirect URLs。
+3. 将 `index.html` 中 `OWNER_EMAIL` 设置为椰子的登录邮箱。
+4. 在本仓库根目录的 `supabase-schema.sql` 最后执行 owner email 更新语句，把 `OWNER_EMAIL_HERE` 替换为相同邮箱：
+   `update private.tree_owner set owner_email = lower('OWNER_EMAIL_HERE') where singleton = true;`
+5. 提交更新。打开网页右上/主人入口，首次用绑定邮箱创建账号，按邮件完成验证，再用邮箱和新密码登录。
+
+**密码安全：** 密码由 Supabase Auth 安全校验，不写入 `index.html`、SQL 或 GitHub。由于密码曾在聊天中发送，请为正式账户另设一个新密码。前端只放 Supabase publishable key；绝不可提交 `service_role` 或 `sb_secret_...` 密钥。
 
 ## 项目文件
 
