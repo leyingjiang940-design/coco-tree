@@ -42,6 +42,7 @@ create table if not exists public.tree_messages (
   created_at timestamptz not null default now()
 );
 alter table public.tree_messages enable row level security;
+revoke all on table public.tree_messages from public, anon, authenticated;
 grant select, insert on public.tree_messages to anon, authenticated;
 grant update (owner_reply) on public.tree_messages to authenticated;
 
