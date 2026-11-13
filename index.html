@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#f7f4ec" />
+  <meta name="description" content="椰子的小小圣诞树：答题、挂上专属彩球，把想说的话留在树上。" />
+  <title>椰子的小小圣诞树 🎄</title>
+  <style>
+    :root {
+      --paper: #f7f4ec;
+      --paper-2: #fffdf8;
+      --ink: #26362f;
+      --muted: #7d857d;
+      --pine: #173f35;
+      --pine-2: #245b49;
+      --pine-3: #36715a;
+      --red: #b64f55;
+      --gold: #c6a66a;
+      --line: rgba(43, 66, 54, .12);
+      --shadow: 0 24px 70px rgba(38, 54, 47, .12);
+      --serif: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", "Noto Serif SC", serif;
+      --sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+    }
+    * { box-sizing: border-box; }
+    html { min-height: 100%; background: var(--paper); }
+    body { margin: 0; color: var(--ink); font-family: var(--sans); background: radial-gradient(circle at 14% 4%, rgba(255,255,255,.9), transparent 30rem), radial-gradient(circle at 90% 32%, rgba(226,232,218,.46), transparent 27rem), var(--paper); min-height: 100vh; }
+    button, input, textarea { font: inherit; }
+    button { cursor: pointer; }
+    .app-shell { width: min(1120px, calc(100% - 36px)); margin: 0 auto; padding: 22px 0 54px; }
+    .topbar { display: flex; justify-content: space-between; align-items: center; gap: 14px; padding: 4px 2px 24px; }
+    .brand { display: flex; align-items: center; gap: 10px; letter-spacing: .12em; font-size: 11px; font-weight: 750; color: #64756a; text-transform: uppercase; }
+    .brand-mark { width: 31px; height: 31px; border-radius: 50%; display: grid; place-items: center; color: #f7f2e6; background: var(--pine); font-size: 15px; box-shadow: 0 5px 14px rgba(23,63,53,.17); }
+    .top-note { color: #899187; font-size: 11px; letter-spacing: .09em; }
+    .screen { display: none; animation: rise .55s cubic-bezier(.2,.7,.2,1) both; }
+    .screen.active { display: block; }
+    @keyframes rise { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+    .eyebrow { display: inline-flex; align-items: center; gap: 9px; color: #8a7958; font-size: 10px; letter-spacing: .2em; text-transform: uppercase; font-weight: 800; }
+    .eyebrow:before, .eyebrow:after { content: ""; width: 20px; height: 1px; background: #cdbb96; }
+    h1, h2, h3, p { margin-top: 0; }
+    .serif { font-family: var(--serif); font-weight: 500; letter-spacing: -.035em; }
+    .intro-grid { display: grid; grid-template-columns: 1fr .88fr; align-items: center; gap: clamp(30px, 6vw, 80px); min-height: min(690px, calc(100vh - 115px)); }
+    .intro-copy { padding: 34px 0 48px; }
+    .intro-copy h1 { font-size: clamp(48px, 7vw, 82px); line-height: 1.04; margin: 24px 0 22px; color: var(--pine); }
+    .intro-copy h1 span { color: var(--red); font-style: italic; }
+    .intro-copy .lead { max-width: 450px; color: #727d73; font-size: 15px; line-height: 1.95; }
+    .intro-meta { display: flex; gap: 20px; margin: 28px 0 33px; color: #778176; font-size: 11px; letter-spacing: .08em; }
+    .intro-meta span { display: inline-flex; align-items: center; gap: 7px; }
+    .primary-btn { border: 0; padding: 15px 24px; color: #fffaf0; background: var(--pine); border-radius: 999px; font-size: 13px; letter-spacing: .08em; box-shadow: 0 10px 22px rgba(23,63,53,.18); transition: transform .2s, box-shadow .2s, background .2s; }
+    .primary-btn:hover { transform: translateY(-2px); box-shadow: 0 14px 26px rgba(23,63,53,.22); background: #205646; }
+    .text-btn { border: 0; background: transparent; padding: 10px 4px; color: #798478; font-size: 12px; text-decoration: underline; text-decoration-color: #c4c9bc; text-underline-offset: 4px; }
+    .intro-art { position: relative; min-height: 530px; display: grid; place-items: center; }
+    .art-halo { position: absolute; width: min(100%, 470px); aspect-ratio: 1; border-radius: 50%; background: radial-gradient(circle, rgba(255,255,255,.9) 0 42%, rgba(234,230,214,.55) 43% 43.5%, transparent 65%); }
+    .art-tree { position: relative; width: min(100%, 430px); filter: drop-shadow(0 19px 16px rgba(35,65,49,.11)); }
+    .art-caption { position: absolute; right: 2%; bottom: 12%; padding: 11px 15px; background: rgba(255,253,248,.88); border: 1px solid rgba(199,180,140,.38); border-radius: 13px; color: #788073; font-family: var(--serif); font-size: 13px; transform: rotate(4deg); box-shadow: 0 8px 24px rgba(55,63,47,.07); }
+    .snow { position: absolute; color: #c9c6b9; opacity: .7; font-size: 20px; animation: drift 7s ease-in-out infinite; }
+    .snow.s1 { top: 12%; left: 10%; } .snow.s2 { right: 9%; top: 24%; animation-delay: -3s; font-size: 13px; } .snow.s3 { bottom: 22%; left: 6%; animation-delay: -1s; font-size: 15px; }
+    @keyframes drift { 0%,100% { transform: translateY(0) rotate(0); } 50% { transform: translateY(10px) rotate(22deg); } }
+    .quiz-wrap { width: min(760px, 100%); margin: 30px auto 0; }
+    .quiz-head { display: flex; justify-content: space-between; align-items: end; margin-bottom: 18px; }
+    .quiz-head h2 { margin: 12px 0 0; color: var(--pine); font-size: clamp(30px, 5vw, 44px); }
+    .counter { color: #8c9488; font-size: 12px; letter-spacing: .1em; }
+    .progress { height: 4px; border-radius: 10px; background: #e7e5da; overflow: hidden; margin-bottom: 25px; }
+    .progress > i { display: block; height: 100%; background: linear-gradient(90deg, #8d9c77, #c7a76c); border-radius: inherit; transition: width .3s ease; }
+    .quiz-card { background: rgba(255,253,248,.9); border: 1px solid rgba(194,185,161,.35); border-radius: 25px; padding: clamp(24px, 5vw, 43px); box-shadow: var(--shadow); }
+    .question-number { color: #a68e65; font-family: var(--serif); font-size: 15px; font-style: italic; }
+    .question { font-size: clamp(22px, 3.7vw, 30px); line-height: 1.48; font-weight: 560; margin: 13px 0 26px; color: #293b31; }
+    .answers { display: grid; grid-template-columns: 1fr 1fr; gap: 11px; }
+    .answer { text-align: left; border: 1px solid #e6e3d8; background: #fffefa; color: #566358; padding: 15px 16px; border-radius: 14px; min-height: 56px; transition: .18s; display: flex; gap: 12px; align-items: center; }
+    .answer:hover { border-color: #aab49e; background: #f8f8f0; transform: translateY(-1px); }
+    .answer.selected { border-color: #426b56; background: #eef3eb; color: #244d3d; box-shadow: inset 0 0 0 1px #426b56; }
+    .answer .letter { width: 25px; height: 25px; border-radius: 50%; display: grid; place-items: center; flex: 0 0 auto; background: #f0eee5; color: #8b8f7f; font-family: var(--serif); font-size: 12px; }
+    .answer.selected .letter { color: #fff; background: var(--pine-2); }
+    .quiz-actions { display: flex; justify-content: space-between; align-items: center; margin-top: 25px; }
+    .quiz-tip { color: #9a9d91; font-size: 11px; }
+    .primary-btn:disabled { opacity: .4; cursor: not-allowed; transform: none; box-shadow: none; }
+    .result-wrap { width: min(850px, 100%); margin: 35px auto; }
+    .result-hero { text-align: center; padding: 34px 20px 28px; background: linear-gradient(145deg, rgba(255,253,248,.94), rgba(240,239,226,.8)); border: 1px solid rgba(194,185,161,.35); border-radius: 26px; box-shadow: var(--shadow); }
+    .score-ring { width: 112px; height: 112px; border-radius: 50%; margin: 0 auto 17px; display: grid; place-items: center; position: relative; background: conic-gradient(var(--score-color) var(--score-angle), #e8e5d9 0); }
+    .score-ring:before { content: ""; position: absolute; inset: 7px; border-radius: 50%; background: #fffdf7; }
+    .score-ring strong { z-index: 1; color: var(--pine); font: 500 27px var(--serif); }
+    .result-hero h2 { color: var(--pine); font-size: clamp(28px, 4.8vw, 42px); margin: 9px 0; }
+    .result-hero .verdict { color: #788174; font-size: 14px; line-height: 1.8; max-width: 560px; margin: 0 auto; }
+    .result-grid { display: grid; grid-template-columns: 1fr .82fr; gap: 16px; margin-top: 17px; }
+    .result-panel { background: rgba(255,253,248,.9); border: 1px solid rgba(194,185,161,.35); border-radius: 20px; padding: 22px; }
+    .panel-title { color: #8c7958; font-size: 11px; font-weight: 800; letter-spacing: .16em; margin-bottom: 14px; }
+    .answer-review { display: grid; gap: 10px; max-height: 430px; overflow: auto; padding-right: 4px; }
+    .review-row { display: grid; grid-template-columns: 23px 1fr; gap: 10px; padding: 10px 0; border-bottom: 1px solid #eeece3; }
+    .review-mark { width: 21px; height: 21px; border-radius: 50%; display: grid; place-items: center; font-size: 11px; margin-top: 2px; }
+    .review-mark.ok { color: #2f7050; background: #e5f0e7; } .review-mark.no { color: #a85252; background: #f7e8e4; }
+    .review-q { color: #455349; font-size: 12px; line-height: 1.6; }
+    .review-a { color: #8b9287; font-size: 11px; margin-top: 3px; line-height: 1.6; }
+    .future-copy { color: #566458; line-height: 1.9; font-size: 13px; }
+    .future-copy strong { color: var(--pine); font-weight: 700; }
+    .hang-cta { text-align: center; margin: 22px 0 5px; }
+    .hang-cta p { color: #848d81; font-size: 12px; margin: 12px 0 0; }
+    .tree-layout { display: grid; grid-template-columns: .85fr 1.15fr; gap: 34px; align-items: center; margin-top: 8px; }
+    .tree-intro { padding: 24px 0; }
+    .tree-intro h1 { font-size: clamp(38px, 5.5vw, 62px); line-height: 1.1; color: var(--pine); margin: 15px 0 16px; }
+    .tree-intro p { color: #788478; line-height: 1.9; font-size: 13px; max-width: 350px; }
+    .tree-stats { display: flex; align-items: center; gap: 18px; padding: 15px 0 22px; }
+    .tree-stat { display: flex; flex-direction: column; gap: 3px; }
+    .tree-stat strong { font: 500 27px var(--serif); color: var(--pine); }
+    .tree-stat span { font-size: 10px; color: #8f978d; letter-spacing: .09em; }
+    .stat-divider { height: 32px; width: 1px; background: #ddd9cb; }
+    .tree-buttons { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+    .outline-btn { border: 1px solid #cbd0c4; background: rgba(255,253,248,.6); color: #506454; border-radius: 999px; padding: 13px 18px; font-size: 12px; transition: .18s; }
+    .outline-btn:hover { border-color: #7a907a; background: #fffdf8; }
+    .tree-card { position: relative; padding: 20px 18px 8px; border-radius: 28px; background: radial-gradient(ellipse at 50% 47%, rgba(255,255,255,.9), rgba(250,248,239,.82) 58%, rgba(240,238,224,.42)); border: 1px solid rgba(197,185,153,.38); min-height: 630px; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden; }
+    .tree-card:before { content: ""; position: absolute; inset: 12px; border: 1px solid rgba(190,174,137,.22); border-radius: 21px; pointer-events: none; }
+    .tree-heading { z-index: 1; text-align: center; margin: 6px 0 0; color: #9a875f; font: italic 15px var(--serif); letter-spacing: .05em; }
+    .tree-canvas { position: relative; width: min(100%, 465px); aspect-ratio: 500 / 590; margin: 0 auto; }
+    .tree-svg { width: 100%; height: 100%; display: block; overflow: visible; }
+    .tree-star { filter: drop-shadow(0 0 9px rgba(232,193,111,.55)); transform-origin: 250px 53px; animation: twinkle 3.5s ease-in-out infinite; }
+    @keyframes twinkle { 0%,100% { opacity: .95; transform: scale(1); } 50% { opacity: 1; transform: scale(1.06); } }
+    .ornament-layer { position: absolute; inset: 0; }
+    .ornament { position: absolute; width: clamp(23px, 6vw, 34px); aspect-ratio: 1; border-radius: 50%; border: 1px solid rgba(255,255,255,.65); background: radial-gradient(circle at 32% 25%, rgba(255,255,255,.95), var(--ball) 30%, color-mix(in srgb, var(--ball), #171a16 27%) 100%); box-shadow: inset -3px -4px 6px rgba(20,30,20,.18), 0 4px 9px rgba(27,49,35,.2), 0 0 12px color-mix(in srgb, var(--ball), transparent 48%); transform: translate(-50%,-50%); padding: 0; transition: transform .2s; }
+    .ornament:before { content: ""; position: absolute; width: 9px; height: 5px; border: 1px solid #c3a767; border-bottom: 0; border-radius: 5px 5px 0 0; top: -6px; left: 50%; transform: translateX(-50%); }
+    .ornament:after { content: ""; position: absolute; top: 5px; left: 7px; width: 6px; height: 10px; border-radius: 50%; background: rgba(255,255,255,.42); filter: blur(.5px); transform: rotate(35deg); }
+    .ornament:hover { transform: translate(-50%,-50%) scale(1.18); z-index: 5; }
+    .tree-footer { color: #9a9c8e; font: italic 12px var(--serif); letter-spacing: .08em; margin: -2px 0 19px; }
+    .board-note { margin: 23px 0 0; display: flex; align-items: center; justify-content: space-between; gap: 15px; color: #90978b; font-size: 11px; }
+    .mode-pill { display: inline-flex; align-items: center; gap: 6px; padding: 7px 10px; border-radius: 999px; background: #eeeee5; color: #7c8476; font-size: 10px; }
+    .mode-pill.online { background: #e7f1e7; color: #477453; }
+    .empty-tree { position: absolute; left: 50%; top: 58%; transform: translate(-50%,-50%); width: 190px; text-align: center; color: rgba(255,255,255,.78); font: italic 13px var(--serif); pointer-events: none; text-shadow: 0 1px 5px rgba(0,0,0,.15); }
+    .modal-backdrop { display: none; position: fixed; inset: 0; z-index: 20; background: rgba(25,39,31,.42); backdrop-filter: blur(6px); padding: 18px; align-items: center; justify-content: center; }
+    .modal-backdrop.open { display: flex; }
+    .modal { width: min(480px, 100%); max-height: min(90vh, 780px); overflow: auto; background: #fffdf7; border-radius: 23px; padding: 27px; box-shadow: 0 28px 90px rgba(14,29,21,.3); position: relative; animation: rise .25s ease both; }
+    .modal-close { position: absolute; right: 15px; top: 13px; border: 0; background: #f1efe6; color: #778174; width: 31px; height: 31px; border-radius: 50%; font-size: 17px; }
+    .modal h3 { font: 500 29px var(--serif); color: var(--pine); margin: 7px 35px 8px 0; }
+    .modal-sub { color: #92988d; font-size: 11px; line-height: 1.7; margin-bottom: 18px; }
+    .field { display: grid; gap: 7px; margin: 14px 0; }
+    .field label { color: #687469; font-size: 11px; letter-spacing: .04em; }
+    .field input, .field textarea { width: 100%; border: 1px solid #e1dfd4; border-radius: 12px; outline: none; padding: 12px 13px; color: #3f4d42; background: #fffefa; font-size: 13px; transition: border .18s, box-shadow .18s; }
+    .field textarea { min-height: 100px; resize: vertical; line-height: 1.7; }
+    .field input:focus, .field textarea:focus { border-color: #8c9d86; box-shadow: 0 0 0 3px rgba(91,126,91,.1); }
+    .consent { display: flex; gap: 9px; align-items: flex-start; color: #858d81; font-size: 11px; line-height: 1.7; margin: 14px 0 18px; }
+    .consent input { accent-color: var(--pine-2); margin-top: 3px; }
+    .modal-actions { display: flex; justify-content: flex-end; gap: 9px; margin-top: 18px; }
+    .notice { color: #a25b54; font-size: 11px; min-height: 16px; margin: 6px 0; }
+    .message-bubble { padding: 16px; background: #f5f3e9; border-radius: 15px; color: #536155; font: 16px/1.9 var(--serif); white-space: pre-wrap; overflow-wrap: anywhere; }
+    .reply-box { margin-top: 15px; padding: 13px; border-left: 2px solid #c4a46a; background: #fbf8ee; border-radius: 0 12px 12px 0; }
+    .reply-box small { display: block; color: #a58b5b; font-size: 10px; letter-spacing: .1em; margin-bottom: 5px; }
+    .reply-box p { margin: 0; color: #607064; font-size: 13px; line-height: 1.7; white-space: pre-wrap; }
+    .owner-list { display: grid; gap: 12px; max-height: 390px; overflow: auto; }
+    .owner-item { padding: 13px; border: 1px solid #ebe8dd; border-radius: 14px; }
+    .owner-item-head { display: flex; justify-content: space-between; gap: 10px; color: #536255; font-size: 12px; margin-bottom: 8px; }
+    .owner-item p { color: #758075; line-height: 1.7; font: 14px/1.8 var(--serif); margin-bottom: 9px; white-space: pre-wrap; }
+    .owner-item textarea { min-height: 65px; width: 100%; border: 1px solid #e4e1d7; border-radius: 10px; padding: 9px; outline: none; font-size: 12px; }
+    .small-btn { border: 1px solid #d6d8cb; border-radius: 999px; padding: 8px 12px; background: #fffdf8; color: #536b59; font-size: 11px; }
+    .small-btn:disabled { opacity: .5; cursor: not-allowed; }
+    .modal-footnote { color: #a0a397; font-size: 10px; line-height: 1.7; margin: 12px 0 0; }
+    .toast { position: fixed; z-index: 40; left: 50%; bottom: 25px; transform: translate(-50%, 15px); background: #203f34; color: #fffaf0; padding: 11px 17px; border-radius: 999px; font-size: 12px; box-shadow: 0 10px 25px rgba(0,0,0,.15); opacity: 0; pointer-events: none; transition: .25s; max-width: calc(100% - 30px); text-align: center; }
+    .toast.show { opacity: 1; transform: translate(-50%,0); }
+    .confetti { color: #c1a66e; }
+    .footer { text-align: center; color: #a1a295; font-size: 10px; letter-spacing: .12em; padding-top: 35px; }
+    @media (max-width: 760px) {
+      .app-shell { width: min(100% - 28px, 560px); padding-top: 15px; }
+      .topbar { padding-bottom: 7px; }
+      .top-note { display: none; }
+      .intro-grid { grid-template-columns: 1fr; gap: 0; min-height: auto; }
+      .intro-copy { padding: 42px 4px 0; }
+      .intro-copy h1 { font-size: clamp(48px, 14vw, 70px); margin: 18px 0; }
+      .intro-art { min-height: 340px; margin-top: -5px; }
+      .art-tree { width: min(82%, 330px); }
+      .art-caption { right: 2%; bottom: 5%; }
+      .quiz-wrap { margin-top: 28px; }
+      .answers { grid-template-columns: 1fr; }
+      .answer { min-height: 52px; }
+      .quiz-card { border-radius: 20px; }
+      .result-grid { grid-template-columns: 1fr; }
+      .tree-layout { grid-template-columns: 1fr; gap: 12px; }
+      .tree-intro { padding: 25px 3px 8px; }
+      .tree-intro h1 { font-size: 44px; }
+      .tree-card { min-height: unset; padding: 18px 8px 8px; }
+      .tree-canvas { width: min(100%, 420px); }
+      .tree-stat strong { font-size: 24px; }
+      .board-note { align-items: flex-start; flex-direction: column; }
+    }
+    @media (prefers-reduced-motion: reduce) { *, *:before, *:after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-duration: .01ms !important; } }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand"><span class="brand-mark">✳</span><span>COCOA · CHRISTMAS NOTES</span></div>
+      <div class="top-note">A LITTLE TREE, A LOT OF MEMORIES</div>
+    </header>
+
+    <main>
+      <section id="welcome" class="screen active">
+        <div class="intro-grid">
+          <div class="intro-copy">
+            <div class="eyebrow">A little invitation</div>
+            <h1 class="serif">椰子的<br/><span>圣诞树</span></h1>
+            <p class="lead">这里有一棵为朋友亮着灯的小树。先回答 11 个关于椰子的小问题，看看你能收集多少默契，再挑一颗专属彩球，把想说的话挂在树上。</p>
+            <div class="intro-meta"><span>✦ 11 道默契小题</span><span>✦ 一颗专属彩球</span></div>
+            <button class="primary-btn" id="startQuiz">开始收集默契 <span aria-hidden="true">↗</span></button>
+          </div>
+          <div class="intro-art" aria-hidden="true">
+            <div class="art-halo"></div>
+            <span class="snow s1">✳</span><span class="snow s2">✧</span><span class="snow s3">❄</span>
+            <svg class="art-tree" viewBox="0 0 430 520" role="img" aria-label="一棵装饰着彩球的圣诞树">
+              <defs>
+                <linearGradient id="artGreen" x1="0" x2="1" y1="0" y2="1"><stop stop-color="#527c5a"/><stop offset=".48" stop-color="#24533f"/><stop offset="1" stop-color="#153d32"/></linearGradient>
+                <linearGradient id="artGold" x1="0" x2="1"><stop stop-color="#f4dfa8"/><stop offset="1" stop-color="#b88b43"/></linearGradient>
+              </defs>
+              <ellipse cx="215" cy="475" rx="135" ry="18" fill="#d9d6c7" opacity=".45"/>
+              <path d="M215 59 L170 145 L189 145 L130 237 L158 237 L86 337 L344 337 L272 237 L300 237 L241 145 L260 145 Z" fill="url(#artGreen)"/>
+              <path d="M215 87 L185 145 L198 145 L150 222 L173 222 L111 315 L320 315 L258 222 L281 222 L232 145 L245 145 Z" fill="none" stroke="#a6ba90" stroke-opacity=".2" stroke-width="3"/>
+              <path d="M195 331 H235 V410 H195 Z" fill="#8d6344"/>
+              <path d="M215 24 L224 48 L250 50 L230 67 L236 92 L215 78 L194 92 L200 67 L180 50 L206 48 Z" fill="url(#artGold)"/>
+              <path d="M160 173 Q220 211 273 175 M130 252 Q212 302 302 251 M100 320 Q215 376 330 319" fill="none" stroke="#d8c58f" stroke-width="2.5" stroke-linecap="round" opacity=".72"/>
+              <g stroke="#e8d9aa" stroke-width="2"><path d="M153 178 l-4 9"/><path d="M278 181 l4 9"/><path d="M134 259 l-3 8"/><path d="M292 258 l3 8"/><path d="M111 324 l-3 8"/><path d="M317 323 l3 8"/></g>
+              <g><circle cx="185" cy="189" r="13" fill="#c45f62"/><circle cx="259" cy="191" r="11" fill="#d3b16d"/><circle cx="153" cy="263" r="13" fill="#829bb0"/><circle cx="282" cy="265" r="14" fill="#c45f62"/><circle cx="211" cy="285" r="12" fill="#d7bd83"/><circle cx="119" cy="331" r="13" fill="#d1a46b"/><circle cx="310" cy="329" r="13" fill="#8a9c78"/><circle cx="215" cy="354" r="15" fill="#c45f62"/></g>
+              <g fill="#fff6d9" opacity=".8"><circle cx="181" cy="185" r="3"/><circle cx="255" cy="187" r="2.5"/><circle cx="149" cy="259" r="3"/><circle cx="278" cy="261" r="3"/><circle cx="207" cy="281" r="2.8"/><circle cx="115" cy="327" r="3"/><circle cx="306" cy="325" r="3"/><circle cx="211" cy="350" r="3"/></g>
+              <g fill="#d9d0ae"><circle cx="165" cy="125" r="2"/><circle cx="280" cy="143" r="2"/><circle cx="104" cy="286" r="2"/><circle cx="337" cy="282" r="2"/><circle cx="218" cy="235" r="2"/></g>
+            </svg>
+            <div class="art-caption">for the people who make winter warm</div>
+          </div>
+        </div>
+      </section>
+
+      <section id="quiz" class="screen">
+        <div class="quiz-wrap">
+          <div class="quiz-head">
+            <div><div class="eyebrow">Know me a little</div><h2 class="serif">你有多懂椰子？</h2></div>
+            <div class="counter" id="counter">01 / 11</div>
+          </div>
+          <div class="progress"><i id="progressBar" style="width:9.09%"></i></div>
+          <div class="quiz-card">
+            <div class="question-number" id="questionNumber">Question 01</div>
+            <div class="question" id="questionText">椰子最喜欢哪个季节？</div>
+            <div class="answers" id="answers"></div>
+            <div class="quiz-actions">
+              <span class="quiz-tip">选一个你觉得最像正确答案的选项</span>
+              <button class="primary-btn" id="nextQuestion" disabled>下一题 →</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="result" class="screen">
+        <div class="result-wrap">
+          <div class="eyebrow">Your little result</div>
+          <div class="result-hero" id="resultHero" style="margin-top:13px">
+            <div class="score-ring" id="scoreRing"><strong id="scoreNumber">0/11</strong></div>
+            <div class="eyebrow">your coconut compatibility</div>
+            <h2 class="serif" id="relationTitle">冬日初访客</h2>
+            <p class="verdict" id="verdictText"></p>
+          </div>
+          <div class="result-grid">
+            <div class="result-panel">
+              <div class="panel-title">逐题核对 · ANSWER CHECK</div>
+              <div class="answer-review" id="answerReview"></div>
+            </div>
+            <div class="result-panel">
+              <div class="panel-title">下一步可以一起做 · NEXT</div>
+              <div class="future-copy" id="futureText"></div>
+              <div style="margin-top:18px;padding-top:15px;border-top:1px solid #eeece3;color:#92988c;font-size:11px;line-height:1.8" id="missedHint"></div>
+            </div>
+          </div>
+          <div class="hang-cta">
+            <button class="primary-btn" id="openHangForm">把我的彩球挂上树 ✦</button>
+            <p>选一颗只属于你的颜色，再留一句想对椰子说的话。</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="tree" class="screen">
+        <div class="tree-layout">
+          <div class="tree-intro">
+            <div class="eyebrow">The tree of little notes</div>
+            <h1 class="serif">把想说的<br/><span style="color:var(--red);font-style:italic">挂在树上。</span></h1>
+            <p>每一颗球都有自己的颜色，也藏着一段留言。点一点树上的彩球，看看朋友们留下了什么。</p>
+            <div class="tree-stats">
+              <div class="tree-stat"><strong id="ballCount">0</strong><span>颗彩球</span></div><div class="stat-divider"></div>
+              <div class="tree-stat"><strong id="averageScore">—</strong><span>平均默契</span></div>
+            </div>
+            <div class="tree-buttons">
+              <button class="primary-btn" id="addAnotherBall">答题并挂球</button>
+              <button class="outline-btn" id="ownerEntry">主人入口</button>
+            </div>
+            <div class="board-note">
+              <span id="connectionStatus" class="mode-pill">● 本机预览 · 尚未连接云端</span>
+              <span>椰子的冬日留言簿</span>
+            </div>
+          </div>
+          <div class="tree-card">
+            <div class="tree-heading">Merry little Christmas</div>
+            <div class="tree-canvas" id="treeCanvas">
+              <svg class="tree-svg" viewBox="0 0 500 590" aria-label="椰子的圣诞树">
+                <defs>
+                  <linearGradient id="treeGreen" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#527b5b"/><stop offset=".42" stop-color="#285940"/><stop offset="1" stop-color="#143b30"/></linearGradient>
+                  <linearGradient id="treeLight" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#75936a" stop-opacity=".6"/><stop offset="1" stop-color="#183f32" stop-opacity="0"/></linearGradient>
+                  <linearGradient id="trunk" x1="0" x2="1"><stop stop-color="#805a40"/><stop offset=".5" stop-color="#a77a52"/><stop offset="1" stop-color="#684735"/></linearGradient>
+                  <filter id="treeShadow"><feGaussianBlur stdDeviation="12"/></filter>
+                </defs>
+                <ellipse cx="250" cy="546" rx="158" ry="17" fill="#bdbba9" opacity=".3" filter="url(#treeShadow)"/>
+                <path d="M222 449 H278 V531 Q250 541 222 531 Z" fill="url(#trunk)"/>
+                <path d="M250 72 L197 170 H216 L151 267 H181 L104 372 H147 L66 476 H434 L353 372 H396 L319 267 H349 L284 170 H303 Z" fill="url(#treeGreen)"/>
+                <path d="M250 94 L211 171 H227 L171 258 H195 L127 360 H160 L91 452 H409 L340 360 H373 L305 258 H329 L273 171 H289 Z" fill="url(#treeLight)" opacity=".6"/>
+                <path d="M188 174 Q248 205 312 174 M146 269 Q247 312 354 267 M105 374 Q247 423 395 371 M69 475 Q247 519 431 475" fill="none" stroke="#91a47f" stroke-opacity=".15" stroke-width="3"/>
+                <path d="M250 72 L250 26" stroke="#c7aa70" stroke-width="1.5" opacity=".75"/>
+                <g class="tree-star">
+                  <path d="M250 10 L260 34 L286 36 L266 53 L272 79 L250 65 L228 79 L234 53 L214 36 L240 34 Z" fill="#e7c77f" stroke="#f8e9bd" stroke-width="2"/>
+                  <circle cx="250" cy="46" r="6" fill="#fff3cb" opacity=".8"/>
+                </g>
+                <path d="M188 177 Q249 226 314 176 M147 270 Q247 333 354 270 M108 375 Q248 444 392 374 M78 468 Q247 535 423 468" fill="none" stroke="#d5bd87" stroke-width="2.3" stroke-linecap="round" opacity=".62"/>
+                <path d="M250 45 L250 510" stroke="#d7e3c4" stroke-opacity=".08" stroke-width="2"/>
+                <g fill="#e5d4a5" opacity=".75"><circle cx="212" cy="156" r="2.5"/><circle cx="299" cy="190" r="2"/><circle cx="172" cy="252" r="2.5"/><circle cx="324" cy="294" r="2.5"/><circle cx="122" cy="354" r="2"/><circle cx="373" cy="386" r="2.5"/><circle cx="197" cy="411" r="2"/><circle cx="281" cy="467" r="2.5"/><circle cx="246" cy="290" r="2"/><circle cx="259" cy="365" r="2"/></g>
+                <g fill="#eff0d8" opacity=".4"><circle cx="188" cy="197" r="2"/><circle cx="343" cy="334" r="2"/><circle cx="153" cy="405" r="2"/><circle cx="300" cy="421" r="2"/></g>
+              </svg>
+              <div class="ornament-layer" id="ornamentLayer"></div>
+              <div class="empty-tree" id="emptyTree">树上还空着一些位置<br/>等第一颗彩球来点亮。</div>
+            </div>
+            <div class="tree-footer">— made of little memories —</div>
+          </div>
+        </div>
+      </section>
+    </main>
+    <footer class="footer">MADE WITH A LITTLE CHRISTMAS MAGIC · FOR COCOA</footer>
+  </div>
+
+  <!-- Hang a ball modal -->
+  <div class="modal-backdrop" id="hangModal" role="dialog" aria-modal="true" aria-labelledby="hangTitle">
+    <div class="modal">
+      <button class="modal-close" data-close="hangModal" aria-label="关闭">×</button>
+      <div class="eyebrow">One little ornament</div>
+      <h3 id="hangTitle">给你的彩球写张小纸条</h3>
+      <p class="modal-sub" id="hangScoreLabel">你的默契分数会决定彩球颜色。昵称可以用网名，不需要填写真实姓名。</p>
+      <div class="field"><label for="nickname">怎么称呼你？</label><input id="nickname" maxlength="20" placeholder="例如：小雪 / 一颗土豆" autocomplete="nickname" /></div>
+      <div class="field"><label for="visitorMessage">想对椰子说什么？</label><textarea id="visitorMessage" maxlength="180" placeholder="把祝福、吐槽或想说的话留在这里……"></textarea></div>
+      <label class="consent"><input id="consentCheck" type="checkbox" /> <span>我同意将这条昵称和留言展示在椰子的圣诞树上。我不会填写电话、地址等私人信息。</span></label>
+      <div class="notice" id="hangError"></div>
+      <div class="modal-actions"><button class="outline-btn" data-close="hangModal">再想想</button><button class="primary-btn" id="submitBall">挂上我的彩球</button></div>
+    </div>
+  </div>
+
+  <!-- Ornament detail modal -->
+  <div class="modal-backdrop" id="messageModal" role="dialog" aria-modal="true" aria-labelledby="messageTitle">
+    <div class="modal">
+      <button class="modal-close" data-close="messageModal" aria-label="关闭">×</button>
+      <div class="eyebrow">A note on the tree</div>
+      <h3 id="messageTitle">一颗小小的彩球</h3>
+      <p class="modal-sub" id="messageMeta"></p>
+      <div class="message-bubble" id="messageBody"></div>
+      <div id="replyDisplay"></div>
+    </div>
+  </div>
+
+  <!-- Owner dashboard -->
+  <div class="modal-backdrop" id="ownerModal" role="dialog" aria-modal="true" aria-labelledby="ownerTitle">
+    <div class="modal">
+      <button class="modal-close" data-close="ownerModal" aria-label="关闭">×</button>
+      <div class="eyebrow">Coconut's desk</div>
+      <h3 id="ownerTitle">主人留言管理</h3>
+      <div id="ownerAuthArea">
+        <p class="modal-sub">连接云端后，请用你自己的主人账号登录。预览模式下可以查看本机测试留言，但不能跨设备管理。</p>
+        <div class="field"><label for="ownerEmail">主人邮箱</label><input id="ownerEmail" type="email" placeholder="你的登录邮箱" autocomplete="username" /></div>
+        <div class="field"><label for="ownerPassword">密码</label><input id="ownerPassword" type="password" placeholder="你的账号密码" autocomplete="current-password" /></div>
+        <div class="notice" id="ownerError"></div>
+        <div class="modal-actions"><button class="primary-btn" id="ownerLogin">登录主人账号</button></div>
+      </div>
+      <div id="ownerDashboard" style="display:none">
+        <p class="modal-sub">点开每条留言下方的回复框，写下你的回复。</p>
+        <div class="owner-list" id="ownerList"></div>
+        <div class="modal-actions"><button class="outline-btn" id="ownerLogout">退出主人账号</button></div>
+      </div>
+      <p class="modal-footnote" id="ownerModeFootnote">提示：当前是本机预览模式。留言保存在此浏览器中，发布后要让朋友共同使用，需要先连接云端数据库。</p>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <!-- Optional shared database. Fill in SUPABASE_URL and SUPABASE_ANON_KEY before publishing. -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    // 连接云端时，将下面两项替换为自己的 Supabase Project URL 和 anon/public key。
+    // 未配置时网页以本机预览模式运行，留言只保存在当前浏览器。
+    const SUPABASE_URL = "";
+    const SUPABASE_ANON_KEY = "";
+    const OWNER_EMAIL = ""; // 填入主人注册 Supabase Auth 时使用的邮箱
+
+    const QUESTIONS = [
+      { q: "椰子最喜欢哪个季节？", a: "夏天", opts: ["春天", "夏天", "秋天", "冬天"] },
+      { q: "想象一个舒服的冬日午后，椰子最喜欢窝在哪里？", a: "壁炉边的毯子里", opts: ["阳台的太阳底下", "壁炉边的毯子里", "咖啡店靠窗的位置", "海边的躺椅上"] },
+      { q: "椰子平时更喜欢哪种咖啡？", a: "冰美式", opts: ["拿铁", "热卡布奇诺", "冰美式", "焦糖玛奇朵"] },
+      { q: "椰子是什么星座？", a: "狮子座", opts: ["双子座", "天秤座", "狮子座", "射手座"] },
+      { q: "椰子以前养过什么小动物？", a: "猫", opts: ["狗", "兔子", "猫", "仓鼠"] },
+      { q: "椰子喜欢的圣诞花是哪一种？", a: "圣诞红", opts: ["冬青", "圣诞红", "白色山茶", "银莲花"] },
+      { q: "椰子一般睡到什么时候？", a: "中午", opts: ["清晨六点", "早上八点", "上午十点", "中午"] },
+      { q: "椰子最想去哪里度假？", a: "热带海岛", opts: ["雪山小镇", "热带海岛", "北欧森林", "沙漠星空营地"] },
+      { q: "椰子喜欢哪一种蛋糕？", a: "蓝莓巴斯克蛋糕", opts: ["抹茶千层", "草莓奶油蛋糕", "蓝莓巴斯克蛋糕", "提拉米苏"] },
+      { q: "装饰圣诞树时，椰子会先挂上什么？", a: "树顶的金色星星", opts: ["最闪亮的彩球", "树顶的金色星星", "一串小铃铛", "彩灯"] },
+      { q: "椰子最近喜欢什么？", a: "造景贴纸", opts: ["拼图", "手账印章", "造景贴纸", "串珠"] }
+    ];
+
+    const RELATIONS = [
+      { name: "冬日初访客", color: "#8b9298", verdict: "你和椰子还在故事的开头。没关系，树下的位置已经为你留好，熟悉是可以慢慢发生的。", future: "从一杯冰美式开始认识彼此吧。下次聊天时，可以问问椰子最近在迷什么，也分享一点你的日常。", next: "先记住一个小偏好，再找机会一起完成一件轻松的小事。" },
+      { name: "树下点头之交", color: "#9584b8", verdict: "你已经捕捉到一点椰子的轮廓，但还有不少可爱细节等待发现。", future: "找个时间交换最近喜欢的歌、电影或小爱好。比起一次记住所有答案，持续聊天更重要。", next: "可以先从一件共同感兴趣的小事聊起。" },
+      { name: "一起看雪的朋友", color: "#7299bd", verdict: "你知道一些椰子的小习惯啦，已经不只是擦肩而过的访客。", future: "下次可以一起去逛逛文具店，或者交换最近收藏的贴纸，让默契慢慢长出来。", next: "多创造一点一起经历的小片段。" },
+      { name: "可以分享小秘密", color: "#64a79b", verdict: "你记得椰子的一些生活偏好，已经有了轻松聊天的基础。", future: "试着分享一件最近开心的小事，也听听椰子最近在期待什么。", next: "把普通日常变成你们共同的话题。" },
+      { name: "日常搭子候选", color: "#91aa70", verdict: "你对椰子的日常有一定了解，已经有机会成为很合拍的玩伴。", future: "可以约一次咖啡、贴纸交换，或一起做个小手工。一起做过的事，会让关系更自然。", next: "把线上聊天变成一次轻松的共同体验。" },
+      { name: "稳定快乐补给站", color: "#c4a75f", verdict: "不错哦，你已经记住了椰子不少生活小细节，是让人感到安心的熟悉朋友。", future: "继续分享新发现，也可以一起规划一次小出行，比如找个海边散步的周末。", next: "保持联系，也给彼此留一点自由空间。" },
+      { name: "很懂椰子的朋友", color: "#d68b5c", verdict: "你对椰子的喜好有相当不错的把握，很多细节都没有逃过你的眼睛。", future: "可以一起做一份冬日清单：咖啡、蛋糕、贴纸和一部想看的电影，慢慢打卡。", next: "把知道的喜好变成温柔但不刻意的日常关心。" },
+      { name: "椰子生活观察员", color: "#d67a7b", verdict: "你的观察力很在线！椰子的生活习惯和小偏好，你已经掌握了不少。", future: "安排一次贴纸造景或手账小聚，顺便聊聊各自最近的新爱好。", next: "继续发现彼此的新变化，不只记住过去的答案。" },
+      { name: "默契小队成员", color: "#bd6b91", verdict: "你已经能接住椰子不少小细节了，默契值相当不错。", future: "一起做点有纪念意义的事吧：交换一张明信片、拍一张冬日合照，或者给这棵树添一颗新球。", next: "让默契继续累积成新的共同回忆。" },
+      { name: "圣诞树常驻嘉宾", color: "#9b76a9", verdict: "这棵树上当然有你的位置。你对椰子的了解已经很丰富啦。", future: "可以一起把想做的事列成愿望清单，等有空时一项项完成。", next: "继续保持真诚交流，也欢迎偶尔给彼此惊喜。" },
+      { name: "椰子心事知情人", color: "#d5a84e", verdict: "你几乎把椰子的小偏好都记住了，简直是这棵树的熟面孔。", future: "下一步不必继续考试啦，找一次真正的相处时间，把这份熟悉延续下去。", next: "多创造新回忆，比记住旧答案更有意思。" },
+      { name: "椰子的限定级好友", color: "#df704c", verdict: "满分！椰子的小细节你都答对了。你是这棵默契小树上的满分选手。", future: "继续做彼此生活里的快乐队友吧。可以一起喝冰美式、逛文具店、做贴纸造景，也可以把下一次旅行列入计划。", next: "满分只是今天的答案，未来还可以一起解锁更多新故事。" }
+    ];
+
+    const BALL_POSITIONS = [
+      [36,31],[64,33],[26,43],[73,45],[43,48],[57,52],[19,57],[81,58],[34,65],[67,66],[49,73],[24,76],[76,78],[41,83],[60,86],[50,39],[31,24],[69,25],[13,68],[87,69]
+    ];
+    const LOCAL_KEY = "coconut-christmas-tree:v1";
+    const VISITED_KEY = "coconut-christmas-visited:v1";
+    const state = { questions: [], index: 0, selected: null, answers: [], score: 0, messages: [], currentScore: null, supabase: null, session: null, owner: false, loading: false };
+
+    const $ = (id) => document.getElementById(id);
+    const showScreen = (id) => { document.querySelectorAll(".screen").forEach(s => s.classList.remove("active")); $(id).classList.add("active"); window.scrollTo({top:0, behavior:"smooth"}); };
+    const escapeHtml = (str) => String(str ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+    const shuffle = (arr) => { const a = [...arr]; for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+    const toast = (message) => { const el = $("toast"); el.textContent = message; el.classList.add("show"); clearTimeout(toast.timer); toast.timer = setTimeout(() => el.classList.remove("show"), 2600); };
+    const openModal = (id) => $(id).classList.add("open");
+    const closeModal = (id) => $(id).classList.remove("open");
+    document.querySelectorAll("[data-close]").forEach(b => b.addEventListener("click", () => closeModal(b.dataset.close)));
+    document.querySelectorAll(".modal-backdrop").forEach(backdrop => backdrop.addEventListener("click", (e) => { if (e.target === backdrop) backdrop.classList.remove("open"); }));
+
+    function getLocalMessages() {
+      try { return JSON.parse(localStorage.getItem(LOCAL_KEY) || "[]"); } catch { return []; }
+    }
+    function saveLocalMessages() { localStorage.setItem(LOCAL_KEY, JSON.stringify(state.messages)); }
+    function isCloudConfigured() { return !!(SUPABASE_URL && SUPABASE_ANON_KEY && window.supabase?.createClient); }
+
+    async function initCloud() {
+      if (!isCloudConfigured()) return;
+      try {
+        state.supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        const { data } = await state.supabase.auth.getSession();
+        state.session = data.session;
+        state.supabase.auth.onAuthStateChange((_event, session) => { state.session = session; state.owner = !!(session?.user?.email && OWNER_EMAIL && session.user.email.toLowerCase() === OWNER_EMAIL.toLowerCase()); if ($("ownerModal").classList.contains("open")) renderOwnerPanel(); });
+        await loadCloudMessages();
+        $("connectionStatus").textContent = "● 云端留言已连接";
+        $("connectionStatus").classList.add("online");
+        state.supabase.channel("tree-messages-live").on("postgres_changes", {event:"*", schema:"public", table:"tree_messages"}, () => loadCloudMessages()).subscribe();
+      } catch (err) {
+        console.warn("Cloud setup unavailable; using local preview.", err);
+      }
+    }
+    async function loadCloudMessages() {
+      if (!state.supabase) return;
+      const { data, error } = await state.supabase.from("tree_messages").select("id,nickname,message,score,color_name,owner_reply,created_at").order("created_at", {ascending:true});
+      if (error) { console.error(error); return; }
+      state.messages = (data || []).map(row => ({...row, color: RELATIONS[row.score]?.color || "#8b9298", cloud:true}));
+      renderTree();
+    }
+
+    function startQuiz() {
+      state.questions = QUESTIONS.map(q => ({...q, shuffled: shuffle(q.opts)}));
+      state.index = 0; state.selected = null; state.answers = []; state.score = 0;
+      showScreen("quiz"); renderQuestion();
+    }
+    function renderQuestion() {
+      const q = state.questions[state.index];
+      const n = state.index + 1;
+      $("counter").textContent = `${String(n).padStart(2,"0")} / 11`;
+      $("questionNumber").textContent = `Question ${String(n).padStart(2,"0")}`;
+      $("questionText").textContent = q.q;
+      $("progressBar").style.width = `${n/11*100}%`;
+      $("answers").innerHTML = "";
+      state.selected = null;
+      $("nextQuestion").disabled = true;
+      q.shuffled.forEach((option, idx) => {
+        const btn = document.createElement("button"); btn.type = "button"; btn.className = "answer";
+        btn.innerHTML = `<span class="letter">${String.fromCharCode(65+idx)}</span><span>${escapeHtml(option)}</span>`;
+        btn.addEventListener("click", () => {
+          state.selected = option;
+          document.querySelectorAll(".answer").forEach(el => el.classList.remove("selected"));
+          btn.classList.add("selected"); $("nextQuestion").disabled = false;
+        });
+        $("answers").appendChild(btn);
+      });
+      $("nextQuestion").textContent = state.index === 10 ? "查看我的结果 ↗" : "下一题 →";
+    }
+    function submitAnswer() {
+      if (state.selected === null) return;
+      const q = state.questions[state.index];
+      state.answers.push({q:q.q, chosen:state.selected, correct:q.a, ok:state.selected === q.a});
+      if (state.selected === q.a) state.score++;
+      if (state.index < 10) { state.index++; renderQuestion(); }
+      else showResult();
+    }
+    function showResult() {
+      const relation = RELATIONS[state.score];
+      state.currentScore = state.score;
+      localStorage.setItem(VISITED_KEY, "true");
+      $("scoreRing").style.setProperty("--score-color", relation.color);
+      $("scoreRing").style.setProperty("--score-angle", `${state.score/11*100}%`);
+      $("scoreNumber").textContent = `${state.score}/11`;
+      $("relationTitle").textContent = relation.name;
+      $("verdictText").textContent = relation.verdict;
+      $("futureText").innerHTML = `<strong>${escapeHtml(relation.future)}</strong><br/><br/>${escapeHtml(relation.next)}`;
+      const wrong = state.answers.filter(a => !a.ok);
+      $("missedHint").textContent = wrong.length ? `还没记住：${wrong.map(a => a.q.replace("椰子", "椰子")).slice(0,3).join("；")}${wrong.length>3?` 等 ${wrong.length} 项`:""}。下次聊天时可以慢慢了解，不用一次背下来。` : "全部答对！这次的默契已经满格，未来继续一起积累新回忆吧。";
+      $("answerReview").innerHTML = state.answers.map((a,i) => `<div class="review-row"><span class="review-mark ${a.ok?"ok":"no"}">${a.ok?"✓":"×"}</span><div><div class="review-q">${i+1}. ${escapeHtml(a.q)}</div><div class="review-a">你的答案：${escapeHtml(a.chosen)}${a.ok?" · 正确":""}<br/>正确答案：${escapeHtml(a.correct)}</div></div></div>`).join("");
+      $("hangScoreLabel").textContent = `你的成绩是 ${state.score}/11 · ${relation.name}。彩球会使用「${relation.name}」对应的颜色。昵称可以用网名，不需要填写真实姓名。`;
+      showScreen("result");
+    }
+
+    function openHang() { $("hangError").textContent = ""; $("nickname").value = ""; $("visitorMessage").value = ""; $("consentCheck").checked = false; openModal("hangModal"); }
+    async function submitBall() {
+      const nickname = $("nickname").value.trim();
+      const message = $("visitorMessage").value.trim();
+      if (!nickname || !message) { $("hangError").textContent = "请先填写昵称和留言。"; return; }
+      if (!$("consentCheck").checked) { $("hangError").textContent = "请勾选展示授权后再挂上彩球。"; return; }
+      if (message.length > 180) { $("hangError").textContent = "留言请控制在 180 字以内。"; return; }
+      const score = Number.isInteger(state.currentScore) ? state.currentScore : 0;
+      const relation = RELATIONS[score];
+      const record = { id: (crypto.randomUUID ? crypto.randomUUID() : String(Date.now())), nickname, message, score, color_name: relation.name, color: relation.color, owner_reply: "", created_at: new Date().toISOString() };
+      $("submitBall").disabled = true;
+      try {
+        if (state.supabase) {
+          const { data, error } = await state.supabase.from("tree_messages").insert({nickname, message, score, color_name:relation.name}).select("id,nickname,message,score,color_name,owner_reply,created_at").single();
+          if (error) throw error;
+          state.messages.push({...data, color:relation.color, cloud:true});
+        } else {
+          state.messages.push(record); saveLocalMessages();
+        }
+        closeModal("hangModal");
+        localStorage.setItem(VISITED_KEY, "true");
+        renderTree(); showScreen("tree"); toast("彩球已经挂上树啦，圣诞树又亮了一点 ✨");
+      } catch (err) {
+        console.error(err); $("hangError").textContent = state.supabase ? "暂时没有保存成功，请检查云端表格配置后重试。" : "保存失败，请检查浏览器存储空间。";
+      } finally { $("submitBall").disabled = false; }
+    }
+
+    function renderTree() {
+      const layer = $("ornamentLayer"); layer.innerHTML = "";
+      const messages = state.messages || [];
+      messages.forEach((m,i) => {
+        const pos = BALL_POSITIONS[i % BALL_POSITIONS.length];
+        const btn = document.createElement("button"); btn.className = "ornament"; btn.type = "button";
+        btn.style.left = `${pos[0]}%`; btn.style.top = `${pos[1]}%`; btn.style.setProperty("--ball", m.color || RELATIONS[m.score]?.color || "#8b9298");
+        btn.setAttribute("aria-label", `${m.nickname} 的留言彩球`); btn.title = `${m.nickname} · ${m.score}/11`;
+        btn.addEventListener("click", () => showMessage(m)); layer.appendChild(btn);
+      });
+      $("emptyTree").style.display = messages.length ? "none" : "block";
+      $("ballCount").textContent = messages.length;
+      const avg = messages.length ? (messages.reduce((sum,m)=>sum + Number(m.score||0),0)/messages.length).toFixed(1) : "—";
+      $("averageScore").textContent = avg === "—" ? "—" : `${avg}/11`;
+    }
+    function showMessage(m) {
+      $("messageTitle").textContent = `${m.nickname} 的彩球`;
+      $("messageMeta").textContent = `${m.color_name || RELATIONS[m.score]?.name || "冬日访客"} · 默契 ${m.score}/11`;
+      $("messageBody").textContent = m.message;
+      const reply = $("replyDisplay");
+      reply.innerHTML = m.owner_reply ? `<div class="reply-box"><small>COCOA REPLIED · 椰子的回复</small><p>${escapeHtml(m.owner_reply)}</p></div>` : "";
+      openModal("messageModal");
+    }
+
+    async function openOwner() { $("ownerError").textContent = ""; openModal("ownerModal"); await renderOwnerPanel(); }
+    async function renderOwnerPanel() {
+      const cloud = !!state.supabase;
+      const isOwner = cloud ? state.owner : true;
+      $("ownerAuthArea").style.display = isOwner ? "none" : "block";
+      $("ownerDashboard").style.display = isOwner ? "block" : "none";
+      $("ownerModeFootnote").textContent = cloud ? "云端模式：主人登录后可查看并回复所有访客留言。" : "本机预览模式：此页面没有主人身份验证，回复只保存在当前浏览器。正式发布并连接云端后，才会启用安全的主人登录。";
+      if (!isOwner) return;
+      if (cloud) await loadCloudMessages();
+      const list = $("ownerList"); list.innerHTML = "";
+      if (!state.messages.length) { list.innerHTML = `<p class="modal-sub">还没有人挂上彩球，邀请朋友来玩吧。</p>`; return; }
+      state.messages.forEach(m => {
+        const item = document.createElement("div"); item.className = "owner-item";
+        item.innerHTML = `<div class="owner-item-head"><strong>${escapeHtml(m.nickname)} · ${Number(m.score)}/11</strong><span>${escapeHtml(m.color_name || "")}</span></div><p>${escapeHtml(m.message)}</p><textarea maxlength="180" placeholder="写一句回复……">${escapeHtml(m.owner_reply || "")}</textarea><div style="display:flex;justify-content:flex-end;margin-top:8px"><button class="small-btn">保存回复</button></div>`;
+        const textarea = item.querySelector("textarea"); const btn = item.querySelector("button");
+        btn.addEventListener("click", async () => {
+          const reply = textarea.value.trim();
+          if (cloud) {
+            const { error } = await state.supabase.from("tree_messages").update({owner_reply:reply}).eq("id",m.id);
+            if (error) { toast("保存失败，请检查主人权限。"); console.error(error); return; }
+          } else {
+            const target = state.messages.find(x => x.id === m.id); if (target) target.owner_reply = reply; saveLocalMessages();
+          }
+          const target = state.messages.find(x => x.id === m.id); if (target) target.owner_reply = reply;
+          toast("回复已保存。"); renderTree();
+        });
+        list.appendChild(item);
+      });
+    }
+
+    async function ownerLogin() {
+      if (!state.supabase) { $("ownerError").textContent = "当前还没有连接云端。请先按发布说明配置数据库。"; return; }
+      const email = $("ownerEmail").value.trim(); const password = $("ownerPassword").value;
+      if (!email || !password) { $("ownerError").textContent = "请填写邮箱和密码。"; return; }
+      const { error } = await state.supabase.auth.signInWithPassword({email,password});
+      if (error) { $("ownerError").textContent = "登录没有成功，请检查账号、密码和云端 Auth 设置。"; return; }
+      const { data } = await state.supabase.auth.getSession(); state.session = data.session;
+      state.owner = !!(data.session?.user?.email && OWNER_EMAIL && data.session.user.email.toLowerCase() === OWNER_EMAIL.toLowerCase());
+      if (!state.owner) { $("ownerError").textContent = "这个账号不是设置的主人账号。"; await state.supabase.auth.signOut(); return; }
+      await renderOwnerPanel();
+    }
+    async function ownerLogout() { if (state.supabase) await state.supabase.auth.signOut(); state.owner = false; await renderOwnerPanel(); }
+
+    $("startQuiz").addEventListener("click", startQuiz);
+    $("nextQuestion").addEventListener("click", submitAnswer);
+    $("openHangForm").addEventListener("click", openHang);
+    $("submitBall").addEventListener("click", submitBall);
+    $("addAnotherBall").addEventListener("click", startQuiz);
+    $("ownerEntry").addEventListener("click", openOwner);
+    $("ownerLogin").addEventListener("click", ownerLogin);
+    $("ownerLogout").addEventListener("click", ownerLogout);
+
+    (async function boot() {
+      await initCloud();
+      if (!state.supabase) state.messages = getLocalMessages();
+      renderTree();
+      // 已经答过题的人再次进入，直接到圣诞树；新朋友第一次进入则先答题。
+      if (localStorage.getItem(VISITED_KEY) === "true") showScreen("tree");
+      else showScreen("welcome");
+    })();
+  </script>
+</body>
+</html>
