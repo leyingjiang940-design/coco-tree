@@ -360,7 +360,7 @@
         <div class="field"><label for="ownerEmail">主人邮箱</label><input id="ownerEmail" type="email" placeholder="你的登录邮箱" autocomplete="username" /></div>
         <div class="field"><label for="ownerPassword">密码</label><input id="ownerPassword" type="password" placeholder="你的账号密码" autocomplete="current-password" /></div>
         <div class="notice" id="ownerError"></div>
-        <div class="modal-actions"><button class="primary-btn" id="ownerLogin">登录主人账号</button></div>
+        <div class="modal-actions"><button class="outline-btn" id="ownerRegister">首次创建主人账号</button><button class="primary-btn" id="ownerLogin">登录主人账号</button></div>
       </div>
       <div id="ownerDashboard" style="display:none">
         <p class="modal-sub">点开每条留言下方的回复框，写下你的回复。</p>
@@ -590,15 +590,41 @@
       });
     }
 
+    function ownerEmailMatches(email) {
+      return !!OWNER_EMAIL && String(email || "").trim().toLowerCase() === OWNER_EMAIL.toLowerCase();
+    }
+    async function ownerRegister() {
+      if (!state.supabase) { $("ownerError").textContent = "云端暂时未连接，请稍后重试。"; return; }
+      const email = $("ownerEmail").value.trim().toLowerCase();
+      const password = $("ownerPassword").value;
+      if (!OWNER_EMAIL) { $("ownerError").textContent = "主人邮箱还没有绑定。请先完成椰子主人邮箱设置。"; return; }
+      if (!ownerEmailMatches(email)) { $("ownerError").textContent = "此邮箱不是椰子绑定的主人邮箱。"; return; }
+      if (password.length < 10) { $("ownerError").textContent = "请设置至少 10 位的新密码。"; return; }
+      const { data, error } = await state.supabase.auth.signUp({
+        email,
+        password,
+        options: { emailRedirectTo: window.location.origin + window.location.pathname }
+      });
+      if (error) { $("ownerError").textContent = "创建账号失败：" + error.message; return; }
+      if (data.session?.user?.email && ownerEmailMatches(data.session.user.email)) {
+        state.session = data.session; state.owner = true; await renderOwnerPanel();
+        toast("主人账号创建成功。");
+      } else {
+        $("ownerError").textContent = "注册请求已提交。请打开主人邮箱完成验证，再回来用邮箱和新密码登录。";
+      }
+    }
     async function ownerLogin() {
-      if (!state.supabase) { $("ownerError").textContent = "当前还没有连接云端。请先按发布说明配置数据库。"; return; }
-      const email = $("ownerEmail").value.trim(); const password = $("ownerPassword").value;
-      if (!email || !password) { $("ownerError").textContent = "请填写邮箱和密码。"; return; }
+      if (!state.supabase) { $("ownerError").textContent = "云端暂时未连接，请稍后重试。"; return; }
+      const email = $("ownerEmail").value.trim().toLowerCase();
+      const password = $("ownerPassword").value;
+      if (!OWNER_EMAIL) { $("ownerError").textContent = "主人邮箱还没有绑定。请先完成椰子主人邮箱设置。"; return; }
+      if (!ownerEmailMatches(email)) { $("ownerError").textContent = "此邮箱不是椰子绑定的主人邮箱。"; return; }
+      if (!email || !password) { $("ownerError").textContent = "请填写主人邮箱和密码。"; return; }
       const { error } = await state.supabase.auth.signInWithPassword({email,password});
-      if (error) { $("ownerError").textContent = "登录没有成功，请检查账号、密码和云端 Auth 设置。"; return; }
+      if (error) { $("ownerError").textContent = "登录没有成功，请检查邮箱、密码，或先完成邮箱验证。"; return; }
       const { data } = await state.supabase.auth.getSession(); state.session = data.session;
-      state.owner = !!(data.session?.user?.email && OWNER_EMAIL && data.session.user.email.toLowerCase() === OWNER_EMAIL.toLowerCase());
-      if (!state.owner) { $("ownerError").textContent = "这个账号不是设置的主人账号。"; await state.supabase.auth.signOut(); return; }
+      state.owner = !!(data.session?.user?.email && ownerEmailMatches(data.session.user.email));
+      if (!state.owner) { $("ownerError").textContent = "这个账号不是椰子绑定的主人账号。"; await state.supabase.auth.signOut(); return; }
       await renderOwnerPanel();
     }
     async function ownerLogout() { if (state.supabase) await state.supabase.auth.signOut(); state.owner = false; await renderOwnerPanel(); }
@@ -610,6 +636,7 @@
     $("addAnotherBall").addEventListener("click", startQuiz);
     $("ownerEntry").addEventListener("click", openOwner);
     $("ownerLogin").addEventListener("click", ownerLogin);
+    $("ownerRegister").addEventListener("click", ownerRegister);
     $("ownerLogout").addEventListener("click", ownerLogout);
 
     (async function boot() {
