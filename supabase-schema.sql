@@ -4,7 +4,6 @@
 
 create schema if not exists private;
 revoke all on schema private from public, anon, authenticated;
-grant usage on schema private to authenticated;
 
 create table if not exists private.tree_owner (
   singleton boolean primary key default true check (singleton),
@@ -16,6 +15,10 @@ values (true, null, null)
 on conflict (singleton) do nothing;
 alter table private.tree_owner enable row level security;
 revoke all on private.tree_owner from public, anon, authenticated;
+drop policy if exists "Deny direct access to owner registry" on private.tree_owner;
+create policy "Deny direct access to owner registry"
+on private.tree_owner for all to public
+using (false) with check (false);
 
 create or replace function private.is_tree_owner()
 returns boolean
